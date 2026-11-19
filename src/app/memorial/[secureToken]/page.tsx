@@ -5,11 +5,15 @@ import { getDb } from "@/lib/db";
 import { ensureSeeded } from "@/lib/seed";
 import { LegaseeLogo } from "@/components/LegaseeLogo";
 import { MemorialGuestbook } from "@/components/MemorialGuestbook";
+import { HeadstoneCard } from "@/components/HeadstoneCard";
+import { GraveTributesAndChallenge } from "@/components/GraveTributesAndChallenge";
 import { createExpiringDownloadToken } from "@/lib/storage";
 import type {
+  DigitalFlowerRecord,
   MediaRecord,
   MemorialMessageRecord,
   MemorialMilestone,
+  MemorialPlotRecord,
   MemorialWebsiteRecord,
   ProductionJobRecord,
 } from "@/lib/types";
@@ -151,6 +155,39 @@ export default async function DedicatedMemorialWebsitePage({
     ? createExpiringDownloadToken({ projectId: project.id, kind: "film" }, 3600)
     : null;
 
+  const plot = db
+    .prepare("SELECT * FROM memorial_plots WHERE project_id = ?")
+    .get(project.id) as unknown as MemorialPlotRecord | undefined;
+
+  let plotFlowers: DigitalFlowerRecord[] = [];
+  let familyPlots: MemorialPlotRecord[] = [];
+
+  if (plot) {
+    // Record grave visit silently
+    const now = new Date().toISOString();
+    db.prepare(
+      "UPDATE memorial_plots SET visit_count = visit_count + 1, last_visited_at = ? WHERE id = ?"
+    ).run(now, plot.id);
+
+    plotFlowers = (
+      db
+        .prepare(
+          "SELECT * FROM digital_flowers WHERE plot_id = ? ORDER BY placed_at DESC"
+        )
+        .all(plot.id) as unknown as DigitalFlowerRecord[]
+    ).map((f) => ({ ...f }));
+
+    if (plot.family_plot_name) {
+      familyPlots = (
+        db
+          .prepare(
+            "SELECT * FROM memorial_plots WHERE family_plot_name = ? AND id != ?"
+          )
+          .all(plot.family_plot_name, plot.id) as unknown as MemorialPlotRecord[]
+      ).map((fp) => ({ ...fp }));
+    }
+  }
+
   return (
     <div className="min-h-screen bg-[#F8F7F3] text-[#202020] flex flex-col">
       <header className="bg-white border-b border-[#E8E6E0] px-5 sm:px-8 h-16 flex items-center justify-between">
@@ -201,6 +238,39 @@ export default async function DedicatedMemorialWebsitePage({
             )}
           </div>
         </section>
+
+        {/* Resting Place & Headstone */}
+        {plot && (
+          <section className="py-12 px-5 sm:px-8 bg-gradient-to-b from-[#EDF0EA] to-[#F8F7F3] border-b border-[#E8E6E0]">
+            <div className="max-w-3xl mx-auto space-y-6">
+              <div className="text-center">
+                <p className="text-xs uppercase tracking-[0.2em] text-[#718875] font-medium">
+                  {plot.environment_template} • {plot.pathway_template}
+                </p>
+              </div>
+              <HeadstoneCard plot={{ ...plot }} flowers={plotFlowers} />
+
+              {familyPlots.length > 0 && (
+                <div className="pt-4">
+                  <p className="text-xs uppercase tracking-wider text-[#77746F] text-center mb-3">
+                    Also resting in {plot.family_plot_name}
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {familyPlots.map((fp) => (
+                      <HeadstoneCard key={fp.id} plot={fp} compact />
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <GraveTributesAndChallenge
+                plotId={plot.id}
+                allowFlowers={Boolean(plot.allow_flowers)}
+                initialFlowers={plotFlowers}
+              />
+            </div>
+          </section>
+        )}
 
         {/* Story */}
         {website.life_story && (

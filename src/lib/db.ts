@@ -245,6 +245,62 @@ function initSchema(db: DatabaseSync) {
       status TEXT NOT NULL DEFAULT 'PENDING',
       created_at TEXT NOT NULL
     );
+
+    CREATE TABLE IF NOT EXISTS memorial_plots (
+      id TEXT PRIMARY KEY,
+      project_id TEXT REFERENCES projects(id) ON DELETE SET NULL,
+      garden_type TEXT NOT NULL DEFAULT 'HUMAN',
+      country TEXT NOT NULL DEFAULT 'United Kingdom',
+      section_name TEXT NOT NULL DEFAULT 'Oak Grove',
+      plot_reference TEXT NOT NULL UNIQUE,
+      plot_type TEXT NOT NULL DEFAULT 'INDIVIDUAL',
+      family_plot_name TEXT,
+      deceased_name TEXT NOT NULL,
+      date_of_birth TEXT,
+      date_of_death TEXT,
+      photo_url TEXT,
+      environment_template TEXT NOT NULL DEFAULT 'European Oak Lawn',
+      pathway_template TEXT NOT NULL DEFAULT 'Stone Paving',
+      headstone_style TEXT NOT NULL DEFAULT 'Warm Limestone Arch',
+      headstone_color TEXT NOT NULL DEFAULT 'Warm Limestone',
+      inscription TEXT NOT NULL DEFAULT 'Forever remembered with love',
+      verification_status TEXT NOT NULL DEFAULT 'APPROVED',
+      privacy_level TEXT NOT NULL DEFAULT 'PUBLIC',
+      allow_flowers INTEGER NOT NULL DEFAULT 1,
+      allow_messages INTEGER NOT NULL DEFAULT 1,
+      visit_count INTEGER NOT NULL DEFAULT 0,
+      last_visited_at TEXT,
+      created_at TEXT NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS digital_flowers (
+      id TEXT PRIMARY KEY,
+      plot_id TEXT NOT NULL REFERENCES memorial_plots(id) ON DELETE CASCADE,
+      flower_type TEXT NOT NULL,
+      sender_name TEXT,
+      is_anonymous INTEGER NOT NULL DEFAULT 0,
+      message TEXT,
+      price_paid REAL NOT NULL DEFAULT 1.5,
+      currency TEXT NOT NULL DEFAULT 'USD',
+      placed_at TEXT NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS memorial_challenges (
+      id TEXT PRIMARY KEY,
+      plot_id TEXT NOT NULL REFERENCES memorial_plots(id) ON DELETE CASCADE,
+      challenger_name TEXT NOT NULL,
+      challenger_email TEXT NOT NULL,
+      reason TEXT NOT NULL,
+      details TEXT NOT NULL,
+      status TEXT NOT NULL DEFAULT 'OPEN',
+      created_at TEXT NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS grave_visits (
+      id TEXT PRIMARY KEY,
+      plot_id TEXT NOT NULL REFERENCES memorial_plots(id) ON DELETE CASCADE,
+      visited_at TEXT NOT NULL
+    );
   `);
 
   try {

@@ -331,3 +331,63 @@ export interface MemorialMessageRecord {
   status: "APPROVED" | "PENDING" | "HIDDEN";
   created_at: string;
 }
+
+export type PlotVerificationStatus =
+  | "PENDING"
+  | "PARTNER_VERIFIED"
+  | "APPROVED"
+  | "DISPUTED"
+  | "RESTRICTED"
+  | "INACTIVE"
+  | "ARCHIVED"
+  | "REMOVED";
+
+export interface MemorialPlotRecord {
+  id: string;
+  project_id: string | null;
+  garden_type: "HUMAN" | "PET";
+  country: string;
+  section_name: string;
+  plot_reference: string;
+  plot_type: "INDIVIDUAL" | "FAMILY_PLOT";
+  family_plot_name: string | null;
+  deceased_name: string;
+  date_of_birth: string | null;
+  date_of_death: string | null;
+  photo_url: string | null;
+  environment_template: string;
+  pathway_template: string;
+  headstone_style: string;
+  headstone_color: string;
+  inscription: string;
+  verification_status: PlotVerificationStatus;
+  privacy_level: "PUBLIC" | "FAMILY_ONLY" | "PRIVATE";
+  allow_flowers: number;
+  allow_messages: number;
+  visit_count: number;
+  last_visited_at: string | null;
+  created_at: string;
+}
+
+export interface DigitalFlowerRecord {
+  id: string;
+  plot_id: string;
+  flower_type: string;
+  sender_name: string | null;
+  is_anonymous: number;
+  message: string | null;
+  price_paid: number;
+  currency: string;
+  placed_at: string;
+}
+
+export interface MemorialChallengeRecord {
+  id: string;
+  plot_id: string;
+  challenger_name: string;
+  challenger_email: string;
+  reason: string;
+  details: string;
+  status: "OPEN" | "UNDER_REVIEW" | "RESOLVED" | "DISMISSED";
+  created_at: string;
+}

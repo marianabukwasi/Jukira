@@ -643,6 +643,133 @@ export function ensureSeeded() {
       "Barnaby always greeted everyone on the lane with a gentle wag and a tennis ball. We will miss seeing him in the garden.",
       now
     );
+
+    // Seed Jukira Memorial Gardens & Pet Memorial Garden plots
+    const insertPlot = db.prepare(`
+      INSERT OR IGNORE INTO memorial_plots (
+        id, project_id, garden_type, country, section_name, plot_reference,
+        plot_type, family_plot_name, deceased_name, date_of_birth, date_of_death,
+        photo_url, environment_template, pathway_template, headstone_style,
+        headstone_color, inscription, verification_status, privacy_level,
+        allow_flowers, allow_messages, visit_count, last_visited_at, created_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, 1, ?, ?, ?)
+    `);
+
+    insertPlot.run(
+      "plt_margaret",
+      "prj_margaret",
+      "HUMAN",
+      "United Kingdom",
+      "Oak Grove • Row A",
+      "JUK-UK-A014",
+      "FAMILY_PLOT",
+      "The Vance Family Resting Place",
+      "Margaret Eleanor Vance",
+      "1942-05-14",
+      "2025-02-03",
+      "/images/stage-grandparent.png",
+      "European Oak Lawn",
+      "Stone Paving",
+      "Warm Limestone Arch",
+      "Warm Limestone",
+      "Forever in our hearts — Beloved mother, grandmother, and music teacher",
+      "PARTNER_VERIFIED",
+      "PUBLIC",
+      24,
+      now,
+      now
+    );
+
+    insertPlot.run(
+      "plt_thomas",
+      null,
+      "HUMAN",
+      "United Kingdom",
+      "Oak Grove • Row A",
+      "JUK-UK-A015",
+      "FAMILY_PLOT",
+      "The Vance Family Resting Place",
+      "Thomas Arthur Vance",
+      "1939-09-02",
+      "2019-11-12",
+      "/images/stage-wedding.png",
+      "European Oak Lawn",
+      "Stone Paving",
+      "Warm Limestone Arch",
+      "Warm Limestone",
+      "Devoted husband and father — Together again in memory",
+      "APPROVED",
+      "PUBLIC",
+      18,
+      now,
+      now
+    );
+
+    insertPlot.run(
+      "plt_barnaby",
+      "prj_barnaby",
+      "PET",
+      "United Kingdom",
+      "Sunlit Meadow • Row B",
+      "JUK-PET-B004",
+      "INDIVIDUAL",
+      null,
+      "Barnaby",
+      "2012-04-10",
+      "2025-01-18",
+      "/images/stage-pet-dog.png",
+      "Meadow & Willows",
+      "Gravel Walk",
+      "Garden Companion Stone",
+      "Warm Limestone",
+      "Good boy forever — Twelve years of coastal walks and endless love",
+      "APPROVED",
+      "PUBLIC",
+      15,
+      now,
+      now
+    );
+
+    const insertFlower = db.prepare(`
+      INSERT OR IGNORE INTO digital_flowers (
+        id, plot_id, flower_type, sender_name, is_anonymous, message,
+        price_paid, currency, placed_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `);
+
+    insertFlower.run(
+      "flw_1",
+      "plt_margaret",
+      "White Rose",
+      "Claire Bennett",
+      0,
+      "Thinking of you today, Mum.",
+      1.5,
+      "USD",
+      now
+    );
+    insertFlower.run(
+      "flw_2",
+      "plt_margaret",
+      "Forget-Me-Not Bouquet",
+      null,
+      1,
+      "Always remembered with gratitude.",
+      2.0,
+      "USD",
+      new Date(Date.now() - 16 * 24 * 60 * 60 * 1000).toISOString()
+    );
+    insertFlower.run(
+      "flw_3",
+      "plt_barnaby",
+      "Sunlit Daisy Posy",
+      "Samira Patel",
+      0,
+      "For our favourite neighbour on the lane.",
+      1.5,
+      "USD",
+      now
+    );
   }
 
   seeded = true;
