@@ -4,7 +4,9 @@ import crypto from "node:crypto";
 
 const UPLOADS_ROOT = path.join(process.cwd(), ".data", "uploads");
 const DOWNLOAD_SECRET =
-  process.env.LEGASEE_SECRET || "jukira-local-dev-secret-change-in-production";
+  process.env.JUKIRA_SECRET ||
+  process.env.LEGASEE_SECRET ||
+  "jukira-local-dev-secret-change-in-production";
 
 export interface StorageProvider {
   saveFile(

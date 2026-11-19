@@ -5,7 +5,9 @@ import type { SessionUser, UserRole } from "./types";
 
 const SESSION_COOKIE = "jukira_session";
 const SECRET_KEY = new TextEncoder().encode(
-  process.env.LEGASEE_SECRET || "jukira-local-dev-secret-change-in-production"
+  process.env.JUKIRA_SECRET ||
+    process.env.LEGASEE_SECRET ||
+    "jukira-local-dev-secret-change-in-production"
 );
 
 export async function hashPassword(password: string): Promise<string> {
