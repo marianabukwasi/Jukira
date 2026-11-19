@@ -40,6 +40,12 @@ export function Navbar({ user }: NavbarProps) {
             Pricing
           </Link>
           <Link
+            href="/memorial-garden"
+            className="text-[#77746F] hover:text-[#202020] transition-colors"
+          >
+            Memorial Garden
+          </Link>
+          <Link
             href="/families"
             className="text-[#77746F] hover:text-[#202020] transition-colors"
           >
@@ -103,6 +109,13 @@ export function Navbar({ user }: NavbarProps) {
             className="block py-2 text-[#202020]"
           >
             Pricing
+          </Link>
+          <Link
+            href="/memorial-garden"
+            onClick={() => setOpen(false)}
+            className="block py-2 text-[#202020]"
+          >
+            Memorial Garden
           </Link>
           <Link
             href="/families"

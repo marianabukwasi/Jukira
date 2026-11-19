@@ -315,6 +315,9 @@ export interface MemorialWebsiteRecord {
   hosting_term: "ANNUAL" | "SIX_MONTHS";
   expires_at: string | null;
   moderation_required: number;
+  listed_in_garden: number;
+  garden_location: string | null;
+  garden_tribute: string | null;
   updated_at: string;
 }
 

@@ -229,6 +229,9 @@ function initSchema(db: DatabaseSync) {
       hosting_term TEXT NOT NULL DEFAULT 'ANNUAL',
       expires_at TEXT,
       moderation_required INTEGER NOT NULL DEFAULT 1,
+      listed_in_garden INTEGER NOT NULL DEFAULT 0,
+      garden_location TEXT,
+      garden_tribute TEXT,
       updated_at TEXT NOT NULL
     );
 
@@ -281,6 +284,13 @@ function initSchema(db: DatabaseSync) {
     db.exec("ALTER TABLE projects ADD COLUMN project_type TEXT NOT NULL DEFAULT 'PERSON';");
   } catch {
     // Column already exists
+  }
+  try {
+    db.exec("ALTER TABLE memorial_websites ADD COLUMN listed_in_garden INTEGER NOT NULL DEFAULT 0;");
+    db.exec("ALTER TABLE memorial_websites ADD COLUMN garden_location TEXT;");
+    db.exec("ALTER TABLE memorial_websites ADD COLUMN garden_tribute TEXT;");
+  } catch {
+    // Columns already exist
   }
 }
 

@@ -185,6 +185,9 @@ export async function PATCH(
         life_story = COALESCE(?, life_story),
         milestones_json = COALESCE(?, milestones_json),
         moderation_required = COALESCE(?, moderation_required),
+        listed_in_garden = COALESCE(?, listed_in_garden),
+        garden_location = COALESCE(?, garden_location),
+        garden_tribute = COALESCE(?, garden_tribute),
         updated_at = ?
     WHERE project_id = ?
   `).run(
@@ -196,6 +199,13 @@ export async function PATCH(
         ? 1
         : 0
       : null,
+    typeof body.listed_in_garden === "boolean"
+      ? body.listed_in_garden
+        ? 1
+        : 0
+      : null,
+    typeof body.garden_location === "string" ? body.garden_location : null,
+    typeof body.garden_tribute === "string" ? body.garden_tribute : null,
     now,
     projectId
   );

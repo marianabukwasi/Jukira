@@ -29,6 +29,11 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/memorial-garden" className="hover:text-[#77746F]">
+                  Memorial Garden
+                </Link>
+              </li>
+              <li>
                 <Link href="/families" className="hover:text-[#77746F]">
                   For Families
                 </Link>

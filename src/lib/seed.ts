@@ -474,8 +474,9 @@ export function ensureSeeded() {
     db.prepare(`
       INSERT OR IGNORE INTO memorial_websites (
         id, project_id, enabled, welcome_message, life_story,
-        milestones_json, hosting_term, expires_at, moderation_required, updated_at
-      ) VALUES (?, ?, 1, ?, ?, ?, 'ANNUAL', ?, 1, ?)
+        milestones_json, hosting_term, expires_at, moderation_required,
+        listed_in_garden, garden_location, garden_tribute, updated_at
+      ) VALUES (?, ?, 1, ?, ?, ?, 'ANNUAL', ?, 1, 1, ?, ?, ?)
     `).run(
       "web_margaret",
       "prj_margaret",
@@ -504,6 +505,8 @@ export function ensureSeeded() {
         },
       ]),
       oneYearExpiry,
+      "Oxford, United Kingdom",
+      "Beloved mother, grandmother, and music teacher — remembered for her warmth and family lunches.",
       now
     );
 

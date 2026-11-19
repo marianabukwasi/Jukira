@@ -27,6 +27,9 @@ export default function FamilyWebsitePage() {
   const [story, setStory] = useState("");
   const [milestones, setMilestones] = useState<MemorialMilestone[]>([]);
   const [moderationRequired, setModerationRequired] = useState(true);
+  const [listedInGarden, setListedInGarden] = useState(false);
+  const [gardenLocation, setGardenLocation] = useState("");
+  const [gardenTribute, setGardenTribute] = useState("");
   const [statusMsg, setStatusMsg] = useState("");
 
   const load = useCallback(async () => {
@@ -49,6 +52,9 @@ export default function FamilyWebsitePage() {
         setWelcome(wData.website.welcome_message || "");
         setStory(wData.website.life_story || "");
         setModerationRequired(Boolean(wData.website.moderation_required));
+        setListedInGarden(Boolean(wData.website.listed_in_garden));
+        setGardenLocation(wData.website.garden_location || "");
+        setGardenTribute(wData.website.garden_tribute || "");
         try {
           setMilestones(JSON.parse(wData.website.milestones_json || "[]"));
         } catch {
@@ -93,6 +99,9 @@ export default function FamilyWebsitePage() {
         life_story: story,
         milestones,
         moderation_required: moderationRequired,
+        listed_in_garden: listedInGarden,
+        garden_location: gardenLocation,
+        garden_tribute: gardenTribute,
       }),
     });
     if (res.ok) setStatusMsg("Memorial website content saved.");
@@ -308,10 +317,43 @@ export default function FamilyWebsitePage() {
                   className="w-4 h-4 accent-[#242424]"
                 />
                 <span>
-                  Require family approval before guestbook messages appear
+                  Require family/admin approval before guestbook messages appear
                   publicly
                 </span>
               </label>
+
+              <div className="p-4 rounded-xl bg-[#F8F7F3] border border-[#E8E6E0] space-y-3">
+                <label className="flex items-center gap-2 text-xs font-medium text-[#202020]">
+                  <input
+                    type="checkbox"
+                    checked={listedInGarden}
+                    onChange={(e) => setListedInGarden(e.target.checked)}
+                    className="w-4 h-4 accent-[#242424]"
+                  />
+                  <span>
+                    Include in the JUKIRA Global Memorial Garden (opt-in public
+                    directory)
+                  </span>
+                </label>
+                {listedInGarden && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                    <input
+                      type="text"
+                      placeholder="City & Country (e.g. Oxford, United Kingdom)"
+                      value={gardenLocation}
+                      onChange={(e) => setGardenLocation(e.target.value)}
+                      className="px-3 py-2 rounded-lg border border-[#E8E6E0] bg-white text-xs"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Short 1-line tribute for the garden card"
+                      value={gardenTribute}
+                      onChange={(e) => setGardenTribute(e.target.value)}
+                      className="px-3 py-2 rounded-lg border border-[#E8E6E0] bg-white text-xs"
+                    />
+                  </div>
+                )}
+              </div>
 
               <button
                 type="submit"
