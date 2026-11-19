@@ -69,7 +69,7 @@ export async function setSessionCookie(user: SessionUser): Promise<void> {
     httpOnly: true,
     sameSite: "lax",
     path: "/",
-    secure: process.env.COOKIE_SECURE === "true",
+    secure: process.env.COOKIE_SECURE === "true" || process.env.VERCEL === "1",
     maxAge: 60 * 60 * 24 * 7,
   });
 }
