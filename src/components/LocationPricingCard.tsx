@@ -10,11 +10,50 @@ interface LocationPricingCardProps {
   mode?: "family" | "wholesale";
 }
 
+const TZ_LOCAL_CURRENCY: Record<
+  string,
+  { currency: string; rateFromEur: number; label: string }
+> = {
+  "Africa/Nairobi": { currency: "KES", rateFromEur: 140, label: "Kenya (KES)" },
+  "Africa/Lagos": { currency: "NGN", rateFromEur: 1750, label: "Nigeria (NGN)" },
+  "Africa/Johannesburg": {
+    currency: "ZAR",
+    rateFromEur: 19.5,
+    label: "South Africa (ZAR)",
+  },
+  "America/Toronto": { currency: "CAD", rateFromEur: 1.5, label: "Canada (CAD)" },
+  "America/Vancouver": {
+    currency: "CAD",
+    rateFromEur: 1.5,
+    label: "Canada (CAD)",
+  },
+  "Australia/Sydney": {
+    currency: "AUD",
+    rateFromEur: 1.65,
+    label: "Australia (AUD)",
+  },
+  "Asia/Kolkata": { currency: "INR", rateFromEur: 90, label: "India (INR)" },
+  "Europe/Zurich": {
+    currency: "CHF",
+    rateFromEur: 0.94,
+    label: "Switzerland (CHF)",
+  },
+};
+
 function formatAmount(amount: number, currency: string): string {
-  if (currency === "UGX") {
-    return `UGX ${Math.round(amount).toLocaleString("en-US")}`;
+  if (currency === "UGX" || currency === "KES" || currency === "NGN" || currency === "INR") {
+    return `${currency} ${Math.round(amount).toLocaleString("en-US")}`;
   }
-  const sym = currency === "USD" ? "$" : currency === "GBP" ? "£" : "€";
+  const symbolMap: Record<string, string> = {
+    EUR: "€",
+    USD: "$",
+    GBP: "£",
+    CAD: "CA$",
+    AUD: "A$",
+    ZAR: "R",
+    CHF: "CHF ",
+  };
+  const sym = symbolMap[currency] || `${currency} `;
   return `${sym}${Number(amount).toFixed(amount % 1 === 0 ? 0 : 2)}`;
 }
 
@@ -25,13 +64,24 @@ export function LocationPricingCard({
 }: LocationPricingCardProps) {
   const [market, setMarket] = useState(initialMarket);
   const [detectedLabel, setDetectedLabel] = useState<string | null>(null);
+  const [localCurrencyOverride, setLocalCurrencyOverride] = useState<{
+    currency: string;
+    rateFromEur: number;
+    label: string;
+  } | null>(null);
 
   useEffect(() => {
     try {
       const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
       const lang = navigator.language || "";
+      if (TZ_LOCAL_CURRENCY[tz]) {
+        setMarket("EU");
+        setLocalCurrencyOverride(TZ_LOCAL_CURRENCY[tz]);
+        setDetectedLabel(TZ_LOCAL_CURRENCY[tz].label);
+        return;
+      }
       let auto = "EU";
-      if (tz.includes("Kampala") || tz.includes("Africa/Nairobi")) {
+      if (tz.includes("Kampala")) {
         auto = "UG";
       } else if (tz.includes("London") || lang === "en-GB") {
         auto = "UK";
@@ -52,6 +102,13 @@ export function LocationPricingCard({
     configs.find((c) => c.country_code === market) || configs[0];
 
   if (!active) return null;
+
+  const displayCurrency = localCurrencyOverride
+    ? localCurrencyOverride.currency
+    : active.currency;
+  const rate = localCurrencyOverride ? localCurrencyOverride.rateFromEur : 1;
+  const conv = (val: number) =>
+    rate === 1 ? val : Math.round(val * rate * 100) / 100;
 
   const tiers = [
     {
@@ -96,6 +153,7 @@ export function LocationPricingCard({
             value={market}
             onChange={(e) => {
               setMarket(e.target.value);
+              setLocalCurrencyOverride(null);
               setDetectedLabel(null);
             }}
             className="bg-transparent text-xs font-medium text-[#202020] focus:outline-none"
@@ -126,7 +184,7 @@ export function LocationPricingCard({
           >
             <span className="text-[#202020]">{t.label}</span>
             <span className="font-medium text-[#202020]">
-              {formatAmount(t.price, active.currency)}
+              {formatAmount(conv(t.price), displayCurrency)}
             </span>
           </div>
         ))}
@@ -136,21 +194,21 @@ export function LocationPricingCard({
         <p>
           Annual Memorial Renewal:{" "}
           <strong className="text-[#202020]">
-            {formatAmount(active.website_annual_renewal ?? 19.99, active.currency)}
+            {formatAmount(conv(active.website_annual_renewal ?? 19.99), displayCurrency)}
             /year
           </strong>
         </p>
         <p>
           Digital Flowers (Visitor Tributes):{" "}
           <strong className="text-[#202020]">
-            {formatAmount(2, active.currency)}
+            {formatAmount(conv(2), displayCurrency)}
           </strong>{" "}
           per bouquet (30-day display)
         </p>
         <p>
           Optional Raw Footage Download:{" "}
           <strong className="text-[#202020]">
-            {formatAmount(active.raw_footage_price, active.currency)}
+            {formatAmount(conv(active.raw_footage_price), displayCurrency)}
           </strong>
         </p>
       </div>

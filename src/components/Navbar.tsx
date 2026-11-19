@@ -5,7 +5,6 @@ import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import { LegaseeLogo } from "./LegaseeLogo";
 import { useLanguage } from "./LanguageContext";
-import { LANGUAGE_LABELS, type SupportedLang } from "@/lib/i18n";
 import type { SessionUser } from "@/lib/types";
 
 interface NavbarProps {
@@ -14,7 +13,7 @@ interface NavbarProps {
 
 export function Navbar({ user }: NavbarProps) {
   const [open, setOpen] = useState(false);
-  const { lang, setLang, t } = useLanguage();
+  const { t } = useLanguage();
 
   const dashboardHref =
     user?.role === "ADMIN"
@@ -60,18 +59,6 @@ export function Navbar({ user }: NavbarProps) {
           >
             {t.navFuneralHomes}
           </Link>
-          <select
-            aria-label="Select language"
-            value={lang}
-            onChange={(e) => setLang(e.target.value as SupportedLang)}
-            className="px-2.5 py-1 rounded-full border border-[#E8E6E0] bg-white text-xs text-[#202020]"
-          >
-            {(Object.keys(LANGUAGE_LABELS) as SupportedLang[]).map((code) => (
-              <option key={code} value={code}>
-                {code.toUpperCase()}
-              </option>
-            ))}
-          </select>
           {user ? (
             <Link
               href={dashboardHref}
@@ -146,20 +133,6 @@ export function Navbar({ user }: NavbarProps) {
           >
             {t.navFuneralHomes}
           </Link>
-          <div className="py-1">
-            <select
-              aria-label="Select language"
-              value={lang}
-              onChange={(e) => setLang(e.target.value as SupportedLang)}
-              className="w-full px-3 py-2 rounded-lg border border-[#E8E6E0] bg-white text-xs text-[#202020]"
-            >
-              {(Object.keys(LANGUAGE_LABELS) as SupportedLang[]).map((code) => (
-                <option key={code} value={code}>
-                  {LANGUAGE_LABELS[code]}
-                </option>
-              ))}
-            </select>
-          </div>
           <div className="pt-2 border-t border-[#E8E6E0] flex flex-col gap-2.5">
             {user ? (
               <Link
