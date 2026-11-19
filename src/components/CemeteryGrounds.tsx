@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Footprints, Globe, Search, SkipForward, Trees } from "lucide-react";
+import { Footprints, Globe, Search, Trees } from "lucide-react";
 import { HeadstoneCard } from "./HeadstoneCard";
+import { Cemetery3DWalk } from "./Cemetery3DWalk";
 import type { DigitalFlowerRecord, MemorialPlotRecord } from "@/lib/types";
 
 interface PlotWithMeta extends MemorialPlotRecord {
@@ -37,7 +38,6 @@ export function CemeteryGrounds({
   const [country, setCountry] = useState("ALL");
   const [query, setQuery] = useState("");
   const [walkingPlot, setWalkingPlot] = useState<PlotWithMeta | null>(null);
-  const [walkStep, setWalkStep] = useState(0);
 
   const filtered = initialPlots.filter((p) => {
     if (p.garden_type !== gardenType) return false;
@@ -54,40 +54,9 @@ export function CemeteryGrounds({
     return true;
   });
 
-  // Gentle virtual walk progression
-  useEffect(() => {
-    if (!walkingPlot) return;
-    if (walkStep >= 3) {
-      const dest = walkingPlot.secure_token
-        ? `/memorial/${walkingPlot.secure_token}`
-        : null;
-      const t = setTimeout(() => {
-        if (dest) router.push(dest);
-        else setWalkingPlot(null);
-      }, 900);
-      return () => clearTimeout(t);
-    }
-    const timer = setTimeout(() => setWalkStep((s) => s + 1), 1300);
-    return () => clearTimeout(timer);
-  }, [walkingPlot, walkStep, router]);
-
   function startWalk(plot: PlotWithMeta) {
-    setWalkStep(0);
     setWalkingPlot(plot);
   }
-
-  const walkStages = walkingPlot
-    ? [
-        `Entering ${
-          gardenType === "PET"
-            ? "Jukira Pet Memorial Garden"
-            : "Jukira Memorial Gardens"
-        } (${walkingPlot.country})...`,
-        `Walking along ${walkingPlot.pathway_template} through ${walkingPlot.environment_template}...`,
-        `Passing ${walkingPlot.section_name}...`,
-        `Arriving at ${walkingPlot.deceased_name} (${walkingPlot.plot_reference})`,
-      ]
-    : [];
 
   return (
     <div className="space-y-8">
@@ -148,42 +117,20 @@ export function CemeteryGrounds({
         </div>
       </div>
 
-      {/* Virtual Walk Overlay */}
+      {/* 3D Cemetery Walk */}
       {walkingPlot && (
-        <div className="bg-[#EFECE4] border border-[#B6A995] rounded-2xl p-8 text-center space-y-5">
-          <Trees className="w-8 h-8 text-[#718875] mx-auto" />
-          <p className="text-xs uppercase tracking-[0.2em] text-[#77746F]">
-            Cemetery Pathway Walk
-          </p>
-          <h3 className="font-editorial text-2xl text-[#202020]">
-            {walkStages[walkStep]}
-          </h3>
-          <div className="max-w-md mx-auto h-2 rounded-full bg-white overflow-hidden">
-            <div
-              className="h-full bg-[#718875] transition-all duration-700"
-              style={{ width: `${((walkStep + 1) / 4) * 100}%` }}
-            />
-          </div>
-          <div className="flex justify-center gap-3">
-            {walkingPlot.secure_token && (
-              <button
-                type="button"
-                onClick={() => router.push(`/memorial/${walkingPlot.secure_token}`)}
-                className="inline-flex items-center gap-1.5 px-5 py-2 rounded-full bg-[#242424] text-white text-xs font-medium"
-              >
-                <SkipForward className="w-3.5 h-3.5" />
-                <span>Skip Walk — Go Directly to Grave</span>
-              </button>
-            )}
-            <button
-              type="button"
-              onClick={() => setWalkingPlot(null)}
-              className="px-4 py-2 rounded-full border border-[#E8E6E0] bg-white text-xs text-[#77746F]"
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
+        <Cemetery3DWalk
+          plot={walkingPlot}
+          flowers={walkingPlot.flowers || []}
+          onArrive={() => {
+            if (walkingPlot.secure_token) {
+              router.push(`/memorial/${walkingPlot.secure_token}`);
+            } else {
+              setWalkingPlot(null);
+            }
+          }}
+          onCancel={() => setWalkingPlot(null)}
+        />
       )}
 
       {/* Landscaped Grounds Layout */}
