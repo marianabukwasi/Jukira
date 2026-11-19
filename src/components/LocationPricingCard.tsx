@@ -1,0 +1,149 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { Globe } from "lucide-react";
+import type { PricingConfigRecord } from "@/lib/types";
+
+interface LocationPricingCardProps {
+  configs: PricingConfigRecord[];
+  initialMarket?: string;
+  mode?: "family" | "wholesale";
+}
+
+function formatAmount(amount: number, currency: string): string {
+  if (currency === "UGX") {
+    return `UGX ${Math.round(amount).toLocaleString("en-US")}`;
+  }
+  const sym = currency === "USD" ? "$" : currency === "GBP" ? "£" : "€";
+  return `${sym}${Number(amount).toFixed(amount % 1 === 0 ? 0 : 2)}`;
+}
+
+export function LocationPricingCard({
+  configs,
+  initialMarket = "EU",
+  mode = "family",
+}: LocationPricingCardProps) {
+  const [market, setMarket] = useState(initialMarket);
+  const [detectedLabel, setDetectedLabel] = useState<string | null>(null);
+
+  useEffect(() => {
+    try {
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+      const lang = navigator.language || "";
+      let auto = "EU";
+      if (tz.includes("Kampala") || tz.includes("Africa/Nairobi")) {
+        auto = "UG";
+      } else if (tz.includes("London") || lang === "en-GB") {
+        auto = "UK";
+      } else if (tz.startsWith("America/") || lang === "en-US") {
+        auto = "US";
+      }
+      if (configs.some((c) => c.country_code === auto)) {
+        setMarket(auto);
+        const match = configs.find((c) => c.country_code === auto);
+        if (match) setDetectedLabel(match.country_name);
+      }
+    } catch {
+      // keep initialMarket
+    }
+  }, [configs]);
+
+  const active =
+    configs.find((c) => c.country_code === market) || configs[0];
+
+  if (!active) return null;
+
+  const tiers = [
+    {
+      label: "Memory Collection (Unedited Compilation, No Film Editing)",
+      price: active.tier_collection ?? 35,
+    },
+    {
+      label: "Photo Tribute Slideshow (Photos Only)",
+      price: active.tier_slideshow ?? 55,
+    },
+    { label: "Short Memorial Film (Up to 10 min, Photos & Videos)", price: active.tier_10 },
+    { label: "Standard Memorial Film (10–20 min, Photos & Videos)", price: active.tier_20 },
+    { label: "Extended Memorial Film (20–30 min, Photos & Videos)", price: active.tier_30 },
+    { label: "Feature Memorial Film (30–45 min, Photos & Videos)", price: active.tier_45 },
+    { label: "Full Life Documentary (45–60 min, Photos & Videos)", price: active.tier_60 },
+  ];
+
+  return (
+    <div className="bg-white border border-[#E8E6E0] rounded-2xl p-8">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
+        <h2 className="font-editorial text-2xl">
+          {mode === "wholesale"
+            ? "Wholesale Pricing Structure"
+            : "Finished film packages"}
+        </h2>
+        <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#F8F7F3] border border-[#E8E6E0]">
+          <Globe className="w-3.5 h-3.5 text-[#77746F]" />
+          <select
+            aria-label="Select pricing location"
+            value={market}
+            onChange={(e) => {
+              setMarket(e.target.value);
+              setDetectedLabel(null);
+            }}
+            className="bg-transparent text-xs font-medium text-[#202020] focus:outline-none"
+          >
+            {configs.map((c) => (
+              <option key={c.country_code} value={c.country_code}>
+                {c.country_name}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      <p className="text-xs text-[#77746F] mb-5">
+        {detectedLabel
+          ? `Showing local pricing for ${detectedLabel}. `
+          : `Showing pricing for ${active.country_name}. `}
+        {mode === "wholesale"
+          ? "Funeral homes are free to set their own retail price or include Jukira within a service package."
+          : `Contributors can upload up to ${active.upload_allowance_gb} GB of footage regardless of finished film length.`}
+      </p>
+
+      <div className="divide-y divide-[#E8E6E0] text-sm">
+        {tiers.map((t) => (
+          <div
+            key={t.label}
+            className="py-3 flex items-center justify-between"
+          >
+            <span className="text-[#202020]">{t.label}</span>
+            <span className="font-medium text-[#202020]">
+              {formatAmount(t.price, active.currency)}
+            </span>
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-5 pt-4 border-t border-[#E8E6E0] text-xs text-[#77746F] space-y-1">
+        <p>
+          Optional Raw Footage Download:{" "}
+          <strong className="text-[#202020]">
+            {formatAmount(active.raw_footage_price, active.currency)}
+          </strong>
+        </p>
+        <p>
+          Optional Dedicated Memorial Website:{" "}
+          <strong className="text-[#202020]">
+            {formatAmount(active.website_setup_price ?? 49, active.currency)}
+          </strong>{" "}
+          (includes 6 months free hosting, then{" "}
+          {formatAmount(active.archive_monthly_price ?? 4.99, active.currency)}
+          /month)
+        </p>
+        <p>
+          Optional Cloud Archive:{" "}
+          <strong className="text-[#202020]">
+            {formatAmount(active.archive_monthly_price ?? 4.99, active.currency)}
+            /month
+          </strong>
+        </p>
+      </div>
+    </div>
+  );
+}

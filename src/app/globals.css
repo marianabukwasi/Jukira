@@ -1,26 +1,70 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg-ivory: #F8F7F3;
+  --bg-cream: #F1EFE9;
+  --bg-card: #FFFFFF;
+  --text-primary: #202020;
+  --text-secondary: #77746F;
+  --border-pale: #E8E6E0;
+  --btn-primary: #242424;
+  --btn-text: #FFFFFF;
+  --accent-taupe: #B6A995;
+  --status-sage: #718875;
+  --status-amber: #B68C55;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-ivory: var(--bg-ivory);
+  --color-cream: var(--bg-cream);
+  --color-card: var(--bg-card);
+  --color-ink: var(--text-primary);
+  --color-warm-grey: var(--text-secondary);
+  --color-pale-border: var(--border-pale);
+  --color-charcoal: var(--btn-primary);
+  --color-taupe: var(--accent-taupe);
+  --color-sage: var(--status-sage);
+  --color-amber: var(--status-amber);
+  --font-serif: "Playfair Display", Georgia, "Times New Roman", serif;
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--bg-ivory);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, .font-editorial {
+  font-family: var(--font-serif);
+  letter-spacing: -0.01em;
+}
+
+@keyframes gentlePan {
+  0% {
+    transform: scale(1) translate3d(0, 0, 0);
+  }
+  50% {
+    transform: scale(1.04) translate3d(-0.6%, -0.4%, 0);
+  }
+  100% {
+    transform: scale(1) translate3d(0, 0, 0);
+  }
+}
+
+.animate-gentle-pan {
+  animation: gentlePan 18s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-gentle-pan {
+    animation: none;
+  }
 }

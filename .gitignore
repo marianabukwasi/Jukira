@@ -10,6 +10,9 @@
 !.yarn/releases
 !.yarn/versions
 
+# local database and private object storage
+/.data
+
 # testing
 /coverage
 
