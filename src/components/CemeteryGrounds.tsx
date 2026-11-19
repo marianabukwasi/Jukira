@@ -124,7 +124,7 @@ export function CemeteryGrounds({
           flowers={walkingPlot.flowers || []}
           onArrive={() => {
             if (walkingPlot.secure_token) {
-              router.push(`/memorial/${walkingPlot.secure_token}`);
+              router.push(`/memorial/${walkingPlot.secure_token}#memorial-film`);
             } else {
               setWalkingPlot(null);
             }
@@ -140,8 +140,8 @@ export function CemeteryGrounds({
             <Trees className="w-4 h-4" />
             <span>
               {gardenType === "PET"
-                ? "Jukira Pet Memorial Garden — Sunlit Meadow & Willow Walk"
-                : "Jukira Memorial Gardens — Landscaped Lawns & Stone Walkways"}
+                ? "Jukira Pet Memorial Garden, Sunlit Meadow & Willow Walk"
+                : "Jukira Memorial Gardens, Landscaped Lawns & Stone Walkways"}
             </span>
           </div>
           <span className="text-xs text-[#77746F]">

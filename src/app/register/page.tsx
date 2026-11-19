@@ -228,7 +228,7 @@ export default function RegisterPage() {
             Create your account
           </h1>
           <p className="text-sm text-[#77746F] mt-1.5">
-            Contributors never need an account — only project owners and
+            Contributors never need an account, only project owners and
             funeral home partners.
           </p>
         </div>

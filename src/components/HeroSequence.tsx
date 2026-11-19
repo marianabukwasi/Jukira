@@ -7,32 +7,32 @@ const LIFE_STAGES = [
   {
     src: "/images/stage-childhood.png",
     alt: "Childhood in a sunlit garden",
-    caption: "Early Years — 1949",
+    caption: "Early Years, 1949",
   },
   {
     src: "/images/stage-young-adult.png",
     alt: "Young adult smiling in golden park light",
-    caption: "Young Adulthood — 1962",
+    caption: "Young Adulthood, 1962",
   },
   {
     src: "/images/stage-wedding.png",
     alt: "Couple laughing on their wedding day",
-    caption: "New Beginnings — 1966",
+    caption: "New Beginnings, 1966",
   },
   {
     src: "/images/stage-friends.png",
     alt: "Friends laughing together outdoors",
-    caption: "Lifelong Friendships — 1988",
+    caption: "Lifelong Friendships, 1988",
   },
   {
     src: "/images/stage-family.png",
     alt: "Multi-generational family gathering around an outdoor table",
-    caption: "Family Gatherings — 2004",
+    caption: "Family Gatherings, 2004",
   },
   {
     src: "/images/stage-grandparent.png",
     alt: "Older grandmother laughing with grandchildren",
-    caption: "With the Grandchildren — 2022",
+    caption: "With the Grandchildren, 2022",
   },
 ];
 

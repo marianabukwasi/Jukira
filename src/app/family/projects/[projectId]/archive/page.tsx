@@ -105,7 +105,7 @@ export default function FamilyArchivePage() {
           ) : subscription?.status === "CANCELLED" ? (
             <>
               <span className="inline-block px-3 py-1 rounded-full bg-[#B68C55]/15 text-[#B68C55] text-xs font-medium">
-                Cancelled — Grace Period Active
+                Cancelled, Grace Period Active
               </span>
               <p className="text-sm text-[#77746F]">
                 Your archive subscription is ending. Please download your

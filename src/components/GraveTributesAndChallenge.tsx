@@ -188,7 +188,7 @@ export function GraveTributesAndChallenge({
                         {f.is_anonymous
                           ? "Anonymous visitor"
                           : f.sender_name || "Visitor"}
-                        {f.message ? ` — "${f.message}"` : ""}
+                        {f.message ? `, "${f.message}"` : ""}
                       </span>
                     </div>
                     <span className="text-[11px] text-[#77746F] shrink-0">

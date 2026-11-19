@@ -35,7 +35,7 @@ export default async function AdminSettingsPage() {
                 className="pb-2.5 border-b border-[#E8E6E0] last:border-none"
               >
                 <p className="font-medium text-[#202020]">
-                  {a.action} — {a.target_type} ({a.target_id})
+                  {a.action}, {a.target_type} ({a.target_id})
                 </p>
                 <p className="text-[#77746F]">
                   {a.actor_email || "System"} •{" "}

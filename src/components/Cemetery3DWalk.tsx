@@ -19,6 +19,9 @@ export function Cemetery3DWalk({
   onCancel,
 }: Cemetery3DWalkProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const [walkDurationSec, setWalkDurationSec] = useState<10 | 30 | 60 | 120>(
+    10
+  );
   const [progress, setProgress] = useState(0);
   const [arrived, setArrived] = useState(false);
   const [muted, setMuted] = useState(true);
@@ -26,6 +29,8 @@ export function Cemetery3DWalk({
   const gainRef = useRef<GainNode | null>(null);
 
   useEffect(() => {
+    setProgress(0);
+    setArrived(false);
     const container = containerRef.current;
     if (!container) return;
 
@@ -247,9 +252,36 @@ export function Cemetery3DWalk({
     // Gentle guided walk animation
     const startZ = 26;
     const endZ = 4.1;
-    const durationMs = 7500;
+    const durationMs = walkDurationSec * 1000;
     const startTime = performance.now();
     let frameId = 0;
+
+    // Clickable 3D headstone raycaster
+    const raycaster = new THREE.Raycaster();
+    const pointer = new THREE.Vector2();
+
+    const handleCanvasClick = (ev: MouseEvent) => {
+      const rect = renderer.domElement.getBoundingClientRect();
+      pointer.x = ((ev.clientX - rect.left) / rect.width) * 2 - 1;
+      pointer.y = -((ev.clientY - rect.top) / rect.height) * 2 + 1;
+      raycaster.setFromCamera(pointer, camera);
+      const hits = raycaster.intersectObject(monument, false);
+      if (hits.length > 0) {
+        onArrive();
+      }
+    };
+
+    const handlePointerMove = (ev: MouseEvent) => {
+      const rect = renderer.domElement.getBoundingClientRect();
+      pointer.x = ((ev.clientX - rect.left) / rect.width) * 2 - 1;
+      pointer.y = -((ev.clientY - rect.top) / rect.height) * 2 + 1;
+      raycaster.setFromCamera(pointer, camera);
+      const hits = raycaster.intersectObject(monument, false);
+      renderer.domElement.style.cursor = hits.length > 0 ? "pointer" : "default";
+    };
+
+    renderer.domElement.addEventListener("click", handleCanvasClick);
+    renderer.domElement.addEventListener("mousemove", handlePointerMove);
 
     const animate = (now: number) => {
       const elapsed = now - startTime;
@@ -285,12 +317,14 @@ export function Cemetery3DWalk({
     return () => {
       cancelAnimationFrame(frameId);
       window.removeEventListener("resize", handleResize);
+      renderer.domElement.removeEventListener("click", handleCanvasClick);
+      renderer.domElement.removeEventListener("mousemove", handlePointerMove);
       renderer.dispose();
       if (audioCtxRef.current) {
         audioCtxRef.current.close().catch(() => {});
       }
     };
-  }, [plot, flowers]);
+  }, [plot, flowers, walkDurationSec, onArrive]);
 
   function toggleSound() {
     if (muted) {
@@ -330,6 +364,25 @@ export function Cemetery3DWalk({
       <div className="relative w-full h-[380px] sm:h-[460px] bg-[#E8ECE6]">
         <div ref={containerRef} className="w-full h-full" />
 
+        {/* Walk duration options */}
+        <div className="absolute top-4 left-4 flex items-center gap-1.5 bg-white/90 border border-[#E8E6E0] rounded-full px-2.5 py-1 text-[11px]">
+          <span className="text-[#77746F] pl-1">Walk:</span>
+          {([10, 30, 60, 120] as const).map((sec) => (
+            <button
+              key={sec}
+              type="button"
+              onClick={() => setWalkDurationSec(sec)}
+              className={`px-2 py-0.5 rounded-full font-medium transition-colors ${
+                walkDurationSec === sec
+                  ? "bg-[#242424] text-white"
+                  : "text-[#77746F] hover:text-[#202020]"
+              }`}
+            >
+              {sec}s
+            </button>
+          ))}
+        </div>
+
         <button
           type="button"
           onClick={toggleSound}
@@ -358,6 +411,11 @@ export function Cemetery3DWalk({
             <p className="font-editorial text-lg text-[#202020]">
               {plot.deceased_name} ({plot.plot_reference})
             </p>
+            {arrived && (
+              <p className="text-[11px] text-[#718875]">
+                Click the 3D headstone or button to play the memorial video
+              </p>
+            )}
           </div>
           <div className="flex items-center gap-2">
             <button
@@ -368,8 +426,8 @@ export function Cemetery3DWalk({
               <SkipForward className="w-3.5 h-3.5" />
               <span>
                 {arrived
-                  ? "Open Headstone & Life Memories"
-                  : "Skip Walk — Go to Grave"}
+                  ? "Play Memorial Video"
+                  : "Skip Walk, Go to Headstone"}
               </span>
             </button>
             <button

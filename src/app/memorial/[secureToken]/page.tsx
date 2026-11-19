@@ -7,6 +7,7 @@ import { LegaseeLogo } from "@/components/LegaseeLogo";
 import { MemorialGuestbook } from "@/components/MemorialGuestbook";
 import { HeadstoneCard } from "@/components/HeadstoneCard";
 import { GraveTributesAndChallenge } from "@/components/GraveTributesAndChallenge";
+import { SampleFilmPlayer } from "@/components/SampleFilmPlayer";
 import { createExpiringDownloadToken } from "@/lib/storage";
 import type {
   DigitalFlowerRecord,
@@ -259,11 +260,11 @@ export default async function DedicatedMemorialWebsitePage({
               <HeadstoneCard
                 plot={{ ...plot }}
                 flowers={plotFlowers}
-                href="#life-memories"
+                href="#memorial-film"
               />
               <p className="text-center text-xs text-[#77746F]">
-                Select the headstone above to open {project.deceased_preferred_name}
-                ’s story, memorial film, original videos, and photographs.
+                Select the headstone above to play {project.deceased_preferred_name}
+                ’s memorial video and view their life story.
               </p>
 
               {familyPlots.length > 0 && (
@@ -333,7 +334,10 @@ export default async function DedicatedMemorialWebsitePage({
         )}
 
         {/* Memorial Film & Original Videos */}
-        <section className="py-14 px-5 sm:px-8 max-w-4xl mx-auto space-y-10">
+        <section
+          id="memorial-film"
+          className="py-14 px-5 sm:px-8 max-w-4xl mx-auto space-y-10"
+        >
           <div>
             <h2 className="font-editorial text-3xl text-[#202020] mb-4">
               Memorial Film
@@ -344,13 +348,11 @@ export default async function DedicatedMemorialWebsitePage({
                   filmToken
                 )}`}
                 controls
+                autoPlay
                 className="w-full rounded-2xl border border-[#E8E6E0] bg-black max-h-[480px]"
               />
             ) : (
-              <div className="bg-white border border-[#E8E6E0] rounded-2xl p-8 text-center text-sm text-[#77746F]">
-                The family’s edited memorial film is currently being prepared
-                and will appear here once completed.
-              </div>
+              <SampleFilmPlayer />
             )}
           </div>
 

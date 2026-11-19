@@ -162,7 +162,7 @@ export function MemorialGuestbook({
                 </div>
               )}
               <p className="text-xs text-[#77746F]">
-                — <strong className="text-[#202020]">{m.author_name}</strong> (
+               , <strong className="text-[#202020]">{m.author_name}</strong> (
                 {m.relationship}) •{" "}
                 {new Date(m.created_at).toLocaleDateString("en-GB")}
               </p>

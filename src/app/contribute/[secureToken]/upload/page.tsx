@@ -506,13 +506,13 @@ export default function ContributeUploadPage() {
                           className="w-full px-3 py-2 rounded-lg border border-[#E8E6E0] bg-white text-xs focus:outline-none focus:border-[#242424]"
                         >
                           <option value="KEEP_ORIGINAL">
-                            Keep original — Use uploaded footage without enhancement
+                            Keep original, Use uploaded footage without enhancement
                           </option>
                           <option value="STANDARD_CORRECTION">
-                            Standard correction — Brightness, contrast, colour &amp; audio balance
+                            Standard correction, Brightness, contrast, colour &amp; audio balance
                           </option>
                           <option value="AI_ENHANCEMENT">
-                            AI enhancement — Clarity &amp; noise improvement without altering faces
+                            AI enhancement, Clarity &amp; noise improvement without altering faces
                           </option>
                         </select>
                       </div>

@@ -216,7 +216,7 @@ export default function AdminProjectProductionPage() {
                     </td>
                     <td className="px-4 py-3">{m.contributor_name}</td>
                     <td className="px-4 py-3 text-[#77746F]">
-                      {m.caption || "—"}{" "}
+                      {m.caption || "-"}{" "}
                       {(m.event_date || m.event_location) &&
                         `(${[m.event_date, m.event_location]
                           .filter(Boolean)

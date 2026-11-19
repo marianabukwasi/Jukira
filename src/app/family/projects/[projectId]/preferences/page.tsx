@@ -134,7 +134,7 @@ export default function FamilyPreferencesPage() {
                 Popular commercial songs require separate publisher and
                 record-label licensing, which can be expensive or unavailable.
                 We offer a curated library of warm, fully licensed instrumental
-                music included in your package — or we can quote custom
+                music included in your package, or we can quote custom
                 licensing if you’d like us to pursue rights for a specific song.
               </div>
             )}

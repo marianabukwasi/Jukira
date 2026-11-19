@@ -54,7 +54,9 @@ export function Home3DShowcase({ items }: { items: ShowcaseItem[] }) {
         key={`${active.plot.id}-${walkKey}`}
         plot={active.plot}
         flowers={active.flowers}
-        onArrive={() => router.push(`/memorial/${active.secureToken}`)}
+        onArrive={() =>
+          router.push(`/memorial/${active.secureToken}#memorial-film`)
+        }
         onCancel={() => router.push("/memorial-garden")}
       />
     </div>

@@ -36,7 +36,7 @@ export default async function PartnerAccountPage() {
       <div className="bg-white border border-[#E8E6E0] rounded-2xl p-6 max-w-xl space-y-3 text-sm">
         <p>
           <span className="text-[#77746F]">Business Name:</span>{" "}
-          <strong>{partner?.business_name || "—"}</strong>
+          <strong>{partner?.business_name || "-"}</strong>
         </p>
         <p>
           <span className="text-[#77746F]">Primary Contact:</span>{" "}
@@ -60,12 +60,12 @@ export default async function PartnerAccountPage() {
           <span className="text-[#77746F]">White-Label Branding:</span>{" "}
           {partner?.white_label_enabled ? (
             <span className="text-[#202020] font-medium">
-              Active — “{partner.white_label_name || partner.business_name}” (
+              Active, “{partner.white_label_name || partner.business_name}” (
               {partner.white_label_monthly_fee} {partner.currency}/month)
             </span>
           ) : (
             <span className="text-[#77746F]">
-              Standard Co-Branded (€0/month — contact admin to enable White-Label)
+              Standard Co-Branded (€0/month, contact admin to enable White-Label)
             </span>
           )}
         </p>

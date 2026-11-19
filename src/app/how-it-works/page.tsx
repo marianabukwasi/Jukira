@@ -17,7 +17,7 @@ export default async function HowItWorksPage() {
     {
       num: "02",
       title: "Share the link with family and friends",
-      body: "Send the link via WhatsApp, email, or a printed QR code. Relatives and friends open it directly on their phone — no account, password, or app download needed.",
+      body: "Send the link via WhatsApp, email, or a printed QR code. Relatives and friends open it directly on their phone, no account, password, or app download needed.",
     },
     {
       num: "03",

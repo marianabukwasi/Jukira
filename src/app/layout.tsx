@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Jukira — Digital Memorial Film & Legacy Preservation",
+  title: "Jukira, Digital Memorial Film & Legacy Preservation",
   description:
     "Bring together photographs and videos from family and friends, and turn them into a professionally produced film celebrating the life of someone you love.",
 };

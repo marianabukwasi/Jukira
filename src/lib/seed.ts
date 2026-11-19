@@ -210,7 +210,7 @@ export function ensureSeeded() {
       "COLLECTING_CONTRIBUTIONS",
       closingDate,
       "Celebrating the Life of Margaret Eleanor Vance",
-      "Forever in our hearts — With love from all the family",
+      "Forever in our hearts, With love from all the family",
       "Warm Acoustic & Piano",
       "Chronological",
       1,
@@ -506,7 +506,7 @@ export function ensureSeeded() {
       ]),
       oneYearExpiry,
       "Oxford, United Kingdom",
-      "Beloved mother, grandmother, and music teacher — remembered for her warmth and family lunches.",
+      "Beloved mother, grandmother, and music teacher, remembered for her warmth and family lunches.",
       now
     );
 
@@ -531,7 +531,7 @@ export function ensureSeeded() {
       "prj_margaret",
       "David Vance",
       "Son",
-      "Thank you to everyone who has shared photographs and stories here — seeing Mum through your eyes means the world to us.",
+      "Thank you to everyone who has shared photographs and stories here, seeing Mum through your eyes means the world to us.",
       now
     );
 
@@ -566,7 +566,7 @@ export function ensureSeeded() {
       "COLLECTING_CONTRIBUTIONS",
       closingDate,
       "Celebrating the Life of Barnaby",
-      "Good boy forever — Always in our hearts",
+      "Good boy forever, Always in our hearts",
       now
     );
 
@@ -611,7 +611,7 @@ export function ensureSeeded() {
     `).run(
       "web_barnaby",
       "prj_barnaby",
-      "In loving memory of Barnaby — twelve joyful years of coastal walks, muddy paws, and endless tail wags.",
+      "In loving memory of Barnaby, twelve joyful years of coastal walks, muddy paws, and endless tail wags.",
       "Barnaby joined our family as an eight-week-old puppy in the spring of 2012. Whether chasing waves on the Devon coast or resting his chin beside the dinner table, he brought warmth and laughter to every single day.",
       JSON.stringify([
         {
@@ -627,7 +627,7 @@ export function ensureSeeded() {
       ]),
       oneYearExpiry,
       "Devon, United Kingdom",
-      "Our loyal golden retriever — twelve years of muddy paws, coastal walks, and unconditional love.",
+      "Our loyal golden retriever, twelve years of muddy paws, coastal walks, and unconditional love.",
       now
     );
 
@@ -672,7 +672,7 @@ export function ensureSeeded() {
       "Stone Paving",
       "Warm Limestone Arch",
       "Warm Limestone",
-      "Forever in our hearts — Beloved mother, grandmother, and music teacher",
+      "Forever in our hearts, Beloved mother, grandmother, and music teacher",
       "PARTNER_VERIFIED",
       "PUBLIC",
       24,
@@ -697,7 +697,7 @@ export function ensureSeeded() {
       "Stone Paving",
       "Warm Limestone Arch",
       "Warm Limestone",
-      "Devoted husband and father — Together again in memory",
+      "Devoted husband and father, Together again in memory",
       "APPROVED",
       "PUBLIC",
       18,
@@ -722,7 +722,7 @@ export function ensureSeeded() {
       "Gravel Walk",
       "Garden Companion Stone",
       "Warm Limestone",
-      "Good boy forever — Twelve years of coastal walks and endless love",
+      "Good boy forever, Twelve years of coastal walks and endless love",
       "APPROVED",
       "PUBLIC",
       15,
