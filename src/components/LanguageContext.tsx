@@ -25,16 +25,16 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const saved = window.localStorage.getItem("jukira_lang") as SupportedLang | null;
-    if (saved && DICTIONARIES[saved]) {
-      setLangState(saved);
-    } else {
-      setLangState(detectBrowserLanguage());
-    }
+    const initial =
+      saved && DICTIONARIES[saved] ? saved : detectBrowserLanguage();
+    setLangState(initial);
+    document.documentElement.lang = initial;
   }, []);
 
   function setLang(next: SupportedLang) {
     setLangState(next);
     window.localStorage.setItem("jukira_lang", next);
+    document.documentElement.lang = next;
   }
 
   return (

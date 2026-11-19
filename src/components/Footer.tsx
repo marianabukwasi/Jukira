@@ -1,7 +1,11 @@
+"use client";
+
 import Link from "next/link";
 import { LegaseeLogo } from "./LegaseeLogo";
+import { useLanguage } from "./LanguageContext";
 
 export function Footer() {
+  const { t } = useLanguage();
   return (
     <footer className="bg-[#F1EFE9] border-t border-[#E8E6E0] mt-auto">
       <div className="max-w-6xl mx-auto px-5 sm:px-8 py-14">
@@ -9,7 +13,7 @@ export function Footer() {
           <div className="md:col-span-1 space-y-3">
             <LegaseeLogo href="/" size="md" />
             <p className="text-sm text-[#77746F] leading-relaxed">
-              A lifetime of memories. A legacy worth preserving.
+              {t.footerTagline}
             </p>
           </div>
 
@@ -25,22 +29,22 @@ export function Footer() {
               </li>
               <li>
                 <Link href="/how-it-works" className="hover:text-[#77746F]">
-                  How It Works
+                  {t.navHowItWorks}
                 </Link>
               </li>
               <li>
                 <Link href="/memorial-garden" className="hover:text-[#77746F]">
-                  Memorial Garden
+                  {t.navGarden}
                 </Link>
               </li>
               <li>
                 <Link href="/families" className="hover:text-[#77746F]">
-                  For Families
+                  {t.navFamilies}
                 </Link>
               </li>
               <li>
                 <Link href="/funeral-homes" className="hover:text-[#77746F]">
-                  For Funeral Homes
+                  {t.navFuneralHomes}
                 </Link>
               </li>
             </ul>

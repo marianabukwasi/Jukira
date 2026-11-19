@@ -116,36 +116,50 @@ export function Navbar({ user }: NavbarProps) {
             onClick={() => setOpen(false)}
             className="block py-2 text-[#202020]"
           >
-            How It Works
+            {t.navHowItWorks}
           </Link>
           <Link
             href="/#pricing"
             onClick={() => setOpen(false)}
             className="block py-2 text-[#202020]"
           >
-            Pricing
+            {t.navPricing}
           </Link>
           <Link
             href="/memorial-garden"
             onClick={() => setOpen(false)}
             className="block py-2 text-[#202020]"
           >
-            Memorial Garden
+            {t.navGarden}
           </Link>
           <Link
             href="/families"
             onClick={() => setOpen(false)}
             className="block py-2 text-[#202020]"
           >
-            For Families
+            {t.navFamilies}
           </Link>
           <Link
             href="/funeral-homes"
             onClick={() => setOpen(false)}
             className="block py-2 text-[#202020]"
           >
-            For Funeral Homes
+            {t.navFuneralHomes}
           </Link>
+          <div className="py-1">
+            <select
+              aria-label="Select language"
+              value={lang}
+              onChange={(e) => setLang(e.target.value as SupportedLang)}
+              className="w-full px-3 py-2 rounded-lg border border-[#E8E6E0] bg-white text-xs text-[#202020]"
+            >
+              {(Object.keys(LANGUAGE_LABELS) as SupportedLang[]).map((code) => (
+                <option key={code} value={code}>
+                  {LANGUAGE_LABELS[code]}
+                </option>
+              ))}
+            </select>
+          </div>
           <div className="pt-2 border-t border-[#E8E6E0] flex flex-col gap-2.5">
             {user ? (
               <Link
@@ -162,14 +176,14 @@ export function Navbar({ user }: NavbarProps) {
                   onClick={() => setOpen(false)}
                   className="w-full text-center py-2.5 rounded-full border border-[#E8E6E0] bg-white text-[#202020] font-medium"
                 >
-                  Sign In
+                  {t.navSignIn}
                 </Link>
                 <Link
                   href="/register"
                   onClick={() => setOpen(false)}
                   className="w-full text-center py-2.5 rounded-full bg-[#242424] text-white font-medium"
                 >
-                  Get Started
+                  {t.navGetStarted}
                 </Link>
               </>
             )}
