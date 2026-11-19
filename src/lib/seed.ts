@@ -534,6 +534,115 @@ export function ensureSeeded() {
       "Thank you to everyone who has shared photographs and stories here — seeing Mum through your eyes means the world to us.",
       now
     );
+
+    // Seed sample Pet Memorial project (Barnaby)
+    db.prepare(`
+      INSERT OR IGNORE INTO projects (
+        id, secure_token, project_type, deceased_full_name, deceased_preferred_name,
+        date_of_birth, date_of_passing, main_photo_url,
+        owner_id, owner_name, owner_email, owner_phone,
+        funeral_home_id, film_duration_tier, preferred_language,
+        country_market, currency, project_status, closing_date,
+        opening_title, closing_title, music_choice, presentation_style,
+        include_shorter_version, review_required, raw_footage_purchased, created_at
+      ) VALUES (?, ?, 'PET', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Warm Acoustic & Piano', 'Chronological', 0, 0, 0, ?)
+    `).run(
+      "prj_barnaby",
+      "barnaby-golden-memories",
+      "Barnaby",
+      "Barnaby",
+      "2012-04-10",
+      "2025-01-18",
+      "/images/stage-pet-dog.png",
+      "usr_family",
+      "Claire Bennett",
+      "claire.bennett@example.com",
+      "+44 7700 900123",
+      null,
+      "PHOTO_SLIDESHOW",
+      "English",
+      "EU",
+      "EUR",
+      "COLLECTING_CONTRIBUTIONS",
+      closingDate,
+      "Celebrating the Life of Barnaby",
+      "Good boy forever — Always in our hearts",
+      now
+    );
+
+    insertContributor.run(
+      "cnt_pet_1",
+      "prj_barnaby",
+      "Claire Bennett",
+      "Family member",
+      "Owner",
+      "claire.bennett@example.com",
+      "v1.0-2026",
+      now,
+      now
+    );
+
+    insertMedia.run(
+      "med_pet_1",
+      "prj_barnaby",
+      "cnt_pet_1",
+      "IMAGE",
+      "image/png",
+      "public:/images/stage-pet-dog.png",
+      "barnaby-garden-portrait.png",
+      1520000,
+      null,
+      "UPLOADED",
+      "Barnaby waiting by the garden gate for his afternoon walk",
+      "2021",
+      "Devon, UK",
+      "KEEP_ORIGINAL",
+      "APPROVED",
+      0,
+      now
+    );
+
+    db.prepare(`
+      INSERT OR IGNORE INTO memorial_websites (
+        id, project_id, enabled, welcome_message, life_story,
+        milestones_json, hosting_term, expires_at, moderation_required,
+        listed_in_garden, garden_location, garden_tribute, updated_at
+      ) VALUES (?, ?, 1, ?, ?, ?, 'SIX_MONTHS', ?, 1, 1, ?, ?, ?)
+    `).run(
+      "web_barnaby",
+      "prj_barnaby",
+      "In loving memory of Barnaby — twelve joyful years of coastal walks, muddy paws, and endless tail wags.",
+      "Barnaby joined our family as an eight-week-old puppy in the spring of 2012. Whether chasing waves on the Devon coast or resting his chin beside the dinner table, he brought warmth and laughter to every single day.",
+      JSON.stringify([
+        {
+          year: "2012",
+          title: "Came Home to Devon",
+          description: "Arrived as a curious eight-week-old golden retriever puppy.",
+        },
+        {
+          year: "2018",
+          title: "Coastal Trail Companion",
+          description: "Walked hundreds of miles along the South West Coast Path.",
+        },
+      ]),
+      oneYearExpiry,
+      "Devon, United Kingdom",
+      "Our loyal golden retriever — twelve years of muddy paws, coastal walks, and unconditional love.",
+      now
+    );
+
+    db.prepare(`
+      INSERT OR IGNORE INTO memorial_messages (
+        id, project_id, author_name, relationship, message, status, created_at
+      ) VALUES (?, ?, ?, ?, ?, 'APPROVED', ?)
+    `).run(
+      "msg_pet_1",
+      "prj_barnaby",
+      "Samira Patel",
+      "Neighbour",
+      "Barnaby always greeted everyone on the lane with a gentle wag and a tennis ball. We will miss seeing him in the garden.",
+      now
+    );
   }
 
   seeded = true;
