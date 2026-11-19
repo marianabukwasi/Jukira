@@ -83,16 +83,32 @@ export default async function HomePage() {
                   label: "Childhood & Early Years",
                 },
                 {
+                  src: "/images/stage-young-adult.png",
+                  label: "Young Adulthood",
+                },
+                {
                   src: "/images/stage-wedding.png",
                   label: "Love & Milestones",
                 },
                 {
+                  src: "/images/stage-friends.png",
+                  label: "Lifelong Friendships",
+                },
+                {
                   src: "/images/stage-family.png",
-                  label: "Family & Friendships",
+                  label: "Family Gatherings",
                 },
                 {
                   src: "/images/stage-grandparent.png",
                   label: "Generations Together",
+                },
+                {
+                  src: "/images/stage-pet-dog.png",
+                  label: "Beloved Dogs",
+                },
+                {
+                  src: "/images/stage-pet-cat.png",
+                  label: "Cherished Pets",
                 },
               ].map((item) => (
                 <div
@@ -241,6 +257,20 @@ export default async function HomePage() {
             {/* Pet Memorials */}
             <div className="bg-white border border-[#E8E6E0] rounded-2xl p-8 flex flex-col justify-between">
               <div>
+                <div className="grid grid-cols-2 gap-2.5 mb-5">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/images/stage-pet-dog.png"
+                    alt="Golden retriever in a family garden"
+                    className="w-full h-24 object-cover rounded-xl border border-[#E8E6E0]"
+                  />
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/images/stage-pet-cat.png"
+                    alt="Gentle cat resting on a sunlit porch"
+                    className="w-full h-24 object-cover rounded-xl border border-[#E8E6E0]"
+                  />
+                </div>
                 <p className="text-xs uppercase tracking-[0.2em] text-[#B6A995] font-medium mb-2">
                   Pet Memorials
                 </p>

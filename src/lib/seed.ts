@@ -347,6 +347,44 @@ export function ensureSeeded() {
       0,
       now
     );
+    insertMedia.run(
+      "med_5",
+      "prj_margaret",
+      "cnt_3",
+      "IMAGE",
+      "image/png",
+      "public:/images/stage-friends.png",
+      "afternoon-friends-1988.png",
+      1610000,
+      null,
+      "UPLOADED",
+      "Afternoon gathering with lifelong friends",
+      "1988",
+      "Bath, UK",
+      "KEEP_ORIGINAL",
+      "APPROVED",
+      0,
+      now
+    );
+    insertMedia.run(
+      "med_6",
+      "prj_margaret",
+      "cnt_1",
+      "IMAGE",
+      "image/png",
+      "public:/images/stage-pet-dog.png",
+      "barnaby-garden.png",
+      1520000,
+      null,
+      "UPLOADED",
+      "With Barnaby in the garden on a sunny morning",
+      "2016",
+      "Devon, UK",
+      "KEEP_ORIGINAL",
+      "APPROVED",
+      0,
+      now
+    );
 
     // Production job
     db.prepare(`
