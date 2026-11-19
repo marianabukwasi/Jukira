@@ -17,8 +17,8 @@ export function LegaseeLogo({
     lg: "w-9 h-9",
   };
   const textSizes = {
-    sm: "text-lg",
-    md: "text-xl",
+    sm: "text-base",
+    md: "text-lg",
     lg: "text-2xl",
   };
 
@@ -27,8 +27,9 @@ export function LegaseeLogo({
 
   const content = (
     <span className="inline-flex items-center gap-2.5 select-none">
+      {/* Preserved-memory film frame & timeline emblem */}
       <svg
-        viewBox="0 0 32 32"
+        viewBox="0 0 36 36"
         width={size === "lg" ? 36 : size === "sm" ? 24 : 28}
         height={size === "lg" ? 36 : size === "sm" ? 24 : 28}
         fill="none"
@@ -38,36 +39,46 @@ export function LegaseeLogo({
         <rect
           x="3"
           y="6"
-          width="26"
-          height="20"
-          rx="3"
+          width="30"
+          height="24"
+          rx="3.5"
           stroke={strokeColor}
           strokeWidth="1.6"
         />
         <line
-          x1="10"
+          x1="10.5"
           y1="6"
-          x2="10"
-          y2="26"
+          x2="10.5"
+          y2="30"
           stroke={accentColor}
           strokeWidth="1.3"
         />
         <line
-          x1="22"
+          x1="25.5"
           y1="6"
-          x2="22"
-          y2="26"
+          x2="25.5"
+          y2="30"
           stroke={accentColor}
           strokeWidth="1.3"
         />
-        <circle cx="16" cy="16" r="2.4" fill={strokeColor} />
+        {/* Subtle timeline horizon + preserved moment */}
+        <line
+          x1="13"
+          y1="18"
+          x2="23"
+          y2="18"
+          stroke={accentColor}
+          strokeWidth="1.2"
+          strokeLinecap="round"
+        />
+        <circle cx="18" cy="18" r="2.6" fill={strokeColor} />
       </svg>
       <span
-        className={`font-editorial font-medium tracking-tight ${textSizes[size]} ${
+        className={`font-editorial font-semibold uppercase tracking-[0.18em] ${textSizes[size]} ${
           inverted ? "text-[#F8F7F3]" : "text-[#202020]"
         }`}
       >
-        Jukira
+        JUKIRA
       </span>
     </span>
   );
