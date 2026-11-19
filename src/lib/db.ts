@@ -2,7 +2,10 @@ import fs from "node:fs";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
 
-const DATA_DIR = path.join(process.cwd(), ".data");
+const DATA_DIR =
+  process.env.VERCEL === "1"
+    ? path.join("/tmp", "jukira-data")
+    : path.join(process.cwd(), ".data");
 const DB_PATH = path.join(DATA_DIR, "jukira.db");
 
 declare global {

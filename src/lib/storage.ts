@@ -2,7 +2,10 @@ import fs from "node:fs";
 import path from "node:path";
 import crypto from "node:crypto";
 
-const UPLOADS_ROOT = path.join(process.cwd(), ".data", "uploads");
+const UPLOADS_ROOT =
+  process.env.VERCEL === "1"
+    ? path.join("/tmp", "jukira-data", "uploads")
+    : path.join(process.cwd(), ".data", "uploads");
 const DOWNLOAD_SECRET =
   process.env.JUKIRA_SECRET ||
   process.env.LEGASEE_SECRET ||
