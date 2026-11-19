@@ -59,6 +59,26 @@ export default function FamilyFilmPage() {
     simulateFailure = false
   ) {
     setStatusMsg("");
+    if (!simulateFailure) {
+      const stripeRes = await fetch("/api/stripe/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          projectId,
+          serviceType:
+            action === "PURCHASE_RAW_FOOTAGE"
+              ? "RAW_FOOTAGE"
+              : "FILM_PRODUCTION",
+        }),
+      });
+      if (stripeRes.ok) {
+        const stripeData = await stripeRes.json();
+        if (stripeData.url) {
+          window.location.href = stripeData.url;
+          return;
+        }
+      }
+    }
     const res = await fetch(`/api/projects/${projectId}/payments`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },

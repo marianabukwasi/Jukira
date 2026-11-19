@@ -12,6 +12,58 @@ interface Cemetery3DWalkProps {
   onCancel: () => void;
 }
 
+function createGrassTexture(): THREE.CanvasTexture {
+  const canvas = document.createElement("canvas");
+  canvas.width = 256;
+  canvas.height = 256;
+  const ctx = canvas.getContext("2d")!;
+  ctx.fillStyle = "#5F7756";
+  ctx.fillRect(0, 0, 256, 256);
+  for (let i = 0; i < 4200; i++) {
+    const x = Math.random() * 256;
+    const y = Math.random() * 256;
+    const shades = ["#526A49", "#6B8460", "#768E69", "#4B6143", "#819672"];
+    ctx.fillStyle = shades[i % shades.length];
+    ctx.fillRect(x, y, 2, 3);
+  }
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.wrapS = THREE.RepeatWrapping;
+  tex.wrapT = THREE.RepeatWrapping;
+  tex.repeat.set(22, 22);
+  return tex;
+}
+
+function createStonePathTexture(template: string): THREE.CanvasTexture {
+  const canvas = document.createElement("canvas");
+  canvas.width = 256;
+  canvas.height = 256;
+  const ctx = canvas.getContext("2d")!;
+  const isBrick = template.includes("Brick");
+  ctx.fillStyle = isBrick ? "#9C7868" : "#C9C3B8";
+  ctx.fillRect(0, 0, 256, 256);
+
+  const rows = isBrick ? 8 : 5;
+  const cols = isBrick ? 4 : 3;
+  const rh = 256 / rows;
+  const cw = 256 / cols;
+
+  for (let r = 0; r < rows; r++) {
+    const offset = r % 2 === 0 ? 0 : cw / 2;
+    for (let c = -1; c <= cols; c++) {
+      const shade = isBrick
+        ? ["#A8806E", "#977160", "#B08977"][(r + c + 4) % 3]
+        : ["#D4CFC4", "#C7C1B5", "#DDD8CE", "#BEB8AC"][(r * 3 + c + 4) % 4];
+      ctx.fillStyle = shade;
+      ctx.fillRect(c * cw + offset + 3, r * rh + 3, cw - 6, rh - 6);
+    }
+  }
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.wrapS = THREE.RepeatWrapping;
+  tex.wrapT = THREE.RepeatWrapping;
+  tex.repeat.set(1.5, 22);
+  return tex;
+}
+
 export function Cemetery3DWalk({
   plot,
   flowers = [],
@@ -38,191 +90,274 @@ export function Cemetery3DWalk({
     const height = container.clientHeight || 460;
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color("#E8ECE6");
-    scene.fog = new THREE.FogExp2("#E8ECE6", 0.022);
+    scene.background = new THREE.Color("#DCE5DF");
+    scene.fog = new THREE.FogExp2("#DCE5DF", 0.018);
 
-    const camera = new THREE.PerspectiveCamera(48, width / height, 0.1, 120);
-    camera.position.set(0, 1.65, 26);
+    const camera = new THREE.PerspectiveCamera(46, width / height, 0.1, 140);
+    camera.position.set(0, 1.68, 28);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     container.innerHTML = "";
     container.appendChild(renderer.domElement);
 
-    // Warm afternoon daylight
-    const hemi = new THREE.HemisphereLight("#FFFDF7", "#6B7C67", 1.15);
+    // Golden-afternoon lighting
+    const hemi = new THREE.HemisphereLight("#FFFDF6", "#4F634A", 1.1);
     scene.add(hemi);
 
-    const sun = new THREE.DirectionalLight("#FFF5E1", 1.35);
-    sun.position.set(14, 22, 16);
+    const sun = new THREE.DirectionalLight("#FFEED2", 1.6);
+    sun.position.set(18, 26, 20);
     sun.castShadow = true;
+    sun.shadow.mapSize.width = 1024;
+    sun.shadow.mapSize.height = 1024;
     scene.add(sun);
 
-    // Landscaped lawn
+    // Lush textured lawn
+    const grassTex = createGrassTexture();
     const lawn = new THREE.Mesh(
-      new THREE.PlaneGeometry(120, 120),
-      new THREE.MeshLambertMaterial({ color: "#889B82" })
+      new THREE.PlaneGeometry(140, 140),
+      new THREE.MeshStandardMaterial({ map: grassTex, roughness: 0.95 })
     );
     lawn.rotation.x = -Math.PI / 2;
     lawn.receiveShadow = true;
     scene.add(lawn);
 
-    // Paved pathway
-    const pathColor = plot.pathway_template.includes("Brick")
-      ? "#A67B68"
-      : plot.pathway_template.includes("Gravel")
-      ? "#D5CFC3"
-      : "#CFCBC2";
-
+    // Cobblestone / Brick pathway
+    const pathTex = createStonePathTexture(plot.pathway_template);
     const pathway = new THREE.Mesh(
-      new THREE.PlaneGeometry(3.2, 70),
-      new THREE.MeshLambertMaterial({ color: pathColor })
+      new THREE.PlaneGeometry(3.4, 80),
+      new THREE.MeshStandardMaterial({ map: pathTex, roughness: 0.85 })
     );
     pathway.rotation.x = -Math.PI / 2;
-    pathway.position.y = 0.015;
+    pathway.position.y = 0.02;
     pathway.receiveShadow = true;
     scene.add(pathway);
 
-    // Pathway stone borders
-    const curbGeo = new THREE.BoxGeometry(0.14, 0.08, 70);
-    const curbMat = new THREE.MeshLambertMaterial({ color: "#B9B3A6" });
+    // Stone border curbs
+    const curbMat = new THREE.MeshStandardMaterial({
+      color: "#BEB8AA",
+      roughness: 0.8,
+    });
+    const curbGeo = new THREE.BoxGeometry(0.18, 0.1, 80);
     const leftCurb = new THREE.Mesh(curbGeo, curbMat);
-    leftCurb.position.set(-1.65, 0.04, 0);
+    leftCurb.position.set(-1.78, 0.05, 0);
     const rightCurb = new THREE.Mesh(curbGeo, curbMat);
-    rightCurb.position.set(1.65, 0.04, 0);
+    rightCurb.position.set(1.78, 0.05, 0);
     scene.add(leftCurb, rightCurb);
 
-    // Trees lining the grounds
-    const trunkMat = new THREE.MeshLambertMaterial({ color: "#6E5A4B" });
-    const leafMat1 = new THREE.MeshLambertMaterial({ color: "#586F55" });
-    const leafMat2 = new THREE.MeshLambertMaterial({ color: "#688064" });
+    // Flowering hedges & garden beds along both sides of the path
+    const bushMat = new THREE.MeshStandardMaterial({
+      color: "#4B6847",
+      roughness: 0.9,
+    });
+    const blossomPalette = ["#F7F4EC", "#D89FA3", "#B9A7CE", "#F2D492"];
+    for (let z = 24; z >= -4; z -= 2.8) {
+      [-2.3, 2.3].forEach((x, side) => {
+        const bush = new THREE.Mesh(
+          new THREE.DodecahedronGeometry(0.45 + ((z + side) % 2) * 0.12, 1),
+          bushMat
+        );
+        bush.position.set(x, 0.3, z);
+        bush.scale.set(1.2, 0.75, 1.2);
+        bush.castShadow = true;
+        scene.add(bush);
 
-    const treePositions = [
-      [-6.5, 22],
-      [6.8, 20],
-      [-7.5, 13],
-      [7.2, 11],
-      [-6.2, 4],
-      [6.4, 3],
-      [-8.5, -5],
-      [8.0, -6],
+        for (let b = 0; b < 3; b++) {
+          const bloom = new THREE.Mesh(
+            new THREE.SphereGeometry(0.07, 6, 6),
+            new THREE.MeshStandardMaterial({
+              color: blossomPalette[(Math.abs(Math.round(z)) + b) % 4],
+            })
+          );
+          bloom.position.set(
+            x + (b - 1) * 0.22,
+            0.52 + (b % 2) * 0.08,
+            z + (side === 0 ? 0.15 : -0.15)
+          );
+          scene.add(bloom);
+        }
+      });
+    }
+
+    // Organic multi-canopy oak & cypress trees
+    const trunkMat = new THREE.MeshStandardMaterial({
+      color: "#5D4B3E",
+      roughness: 0.95,
+    });
+    const canopyMats = [
+      new THREE.MeshStandardMaterial({ color: "#446042", roughness: 0.85 }),
+      new THREE.MeshStandardMaterial({ color: "#557250", roughness: 0.85 }),
+      new THREE.MeshStandardMaterial({ color: "#64825D", roughness: 0.85 }),
     ];
 
-    treePositions.forEach(([tx, tz], idx) => {
-      const group = new THREE.Group();
+    const treeCoords = [
+      [-6.5, 24],
+      [6.8, 22],
+      [-7.2, 16],
+      [7.0, 14],
+      [-6.4, 8],
+      [6.6, 6],
+      [-7.5, -2],
+      [7.4, -3],
+    ];
+
+    treeCoords.forEach(([tx, tz], idx) => {
+      const tree = new THREE.Group();
       const trunk = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.18, 0.28, 2.2, 8),
+        new THREE.CylinderGeometry(0.22, 0.34, 2.8, 10),
         trunkMat
       );
-      trunk.position.y = 1.1;
+      trunk.position.y = 1.4;
       trunk.castShadow = true;
-      group.add(trunk);
+      tree.add(trunk);
 
-      const canopy = new THREE.Mesh(
-        new THREE.ConeGeometry(idx % 2 === 0 ? 1.4 : 1.7, 4.4, 9),
-        idx % 2 === 0 ? leafMat1 : leafMat2
-      );
-      canopy.position.y = 3.8;
-      canopy.castShadow = true;
-      group.add(canopy);
+      const offsets = [
+        [0, 3.6, 0, 1.45],
+        [-0.85, 3.1, 0.45, 1.1],
+        [0.9, 3.2, -0.35, 1.15],
+        [0.2, 4.3, 0.3, 1.05],
+      ];
+      offsets.forEach(([ox, oy, oz, rad], cIdx) => {
+        const puff = new THREE.Mesh(
+          new THREE.DodecahedronGeometry(rad, 1),
+          canopyMats[(idx + cIdx) % canopyMats.length]
+        );
+        puff.position.set(ox, oy, oz);
+        puff.castShadow = true;
+        tree.add(puff);
+      });
 
-      group.position.set(tx, 0, tz);
-      scene.add(group);
+      tree.position.set(tx, 0, tz);
+      scene.add(tree);
     });
 
-    // Neighbouring headstones along the rows
-    const neighbourMat = new THREE.MeshLambertMaterial({ color: "#D9D4C8" });
-    const neighbourGeo = new THREE.BoxGeometry(1.1, 1.35, 0.25);
-    const neighbourCoords = [
-      [-3.8, 17],
-      [3.8, 17],
-      [-3.8, 10],
-      [3.8, 10],
-      [-3.8, 2],
-      [3.8, 2],
-    ];
-    neighbourCoords.forEach(([nx, nz]) => {
-      const stone = new THREE.Mesh(neighbourGeo, neighbourMat);
-      stone.position.set(nx, 0.68, nz);
-      stone.castShadow = true;
-      scene.add(stone);
+    // Cemetery benches along the pathway
+    const woodMat = new THREE.MeshStandardMaterial({ color: "#785C45" });
+    const ironMat = new THREE.MeshStandardMaterial({ color: "#2B2B29" });
+    [
+      [-2.8, 13, Math.PI / 2],
+      [2.8, 6, -Math.PI / 2],
+    ].forEach(([bx, bz, rot]) => {
+      const bench = new THREE.Group();
+      const seat = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.08, 0.48), woodMat);
+      seat.position.y = 0.45;
+      const back = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.45, 0.08), woodMat);
+      back.position.set(0, 0.72, -0.2);
+      const legL = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.45, 0.44), ironMat);
+      legL.position.set(-0.62, 0.22, 0);
+      const legR = legL.clone();
+      legR.position.x = 0.62;
+      bench.add(seat, back, legL, legR);
+      bench.position.set(bx, 0, bz);
+      bench.rotation.y = rot;
+      scene.add(bench);
+    });
+
+    // Neighbouring monuments
+    const neighbourMat = new THREE.MeshStandardMaterial({
+      color: "#D9D4C8",
+      roughness: 0.7,
+    });
+    [
+      [-4.4, 19],
+      [4.4, 19],
+      [-4.4, 11],
+      [4.4, 11],
+      [-4.4, 3],
+      [4.4, 3],
+    ].forEach(([nx, nz]) => {
+      const nStone = new THREE.Mesh(
+        new THREE.BoxGeometry(1.15, 1.4, 0.28),
+        neighbourMat
+      );
+      nStone.position.set(nx, 0.7, nz);
+      nStone.castShadow = true;
+      scene.add(nStone);
     });
 
     // Target Personalised 3D Headstone
     const headstoneHex =
       plot.headstone_color === "Charcoal Granite"
-        ? "#2C2C2A"
+        ? "#2B2B29"
         : plot.headstone_color === "Ivory Marble"
-        ? "#FAF9F6"
-        : "#E6E1D5";
+        ? "#F8F6F1"
+        : "#E4DFD2";
     const textHex =
       plot.headstone_color === "Charcoal Granite" ? "#F8F7F3" : "#202020";
 
     const stoneGroup = new THREE.Group();
     stoneGroup.position.set(0, 0, 0);
 
-    // Base plinth
     const plinth = new THREE.Mesh(
-      new THREE.BoxGeometry(2.1, 0.22, 0.7),
-      new THREE.MeshLambertMaterial({ color: "#C8C2B5" })
+      new THREE.BoxGeometry(2.3, 0.24, 0.82),
+      new THREE.MeshStandardMaterial({ color: "#C6C0B2", roughness: 0.75 })
     );
-    plinth.position.y = 0.11;
+    plinth.position.y = 0.12;
     plinth.receiveShadow = true;
     stoneGroup.add(plinth);
 
-    // Engraved canvas texture for the headstone face
     const texCanvas = document.createElement("canvas");
     texCanvas.width = 512;
     texCanvas.height = 512;
-    const ctx = texCanvas.getContext("2d");
-    if (ctx) {
-      ctx.fillStyle = headstoneHex;
-      ctx.fillRect(0, 0, 512, 512);
-
-      ctx.strokeStyle = "#B6A995";
-      ctx.lineWidth = 6;
-      ctx.strokeRect(24, 24, 464, 464);
-
-      ctx.fillStyle = textHex;
-      ctx.textAlign = "center";
-      ctx.font = "600 32px Georgia, serif";
-      ctx.fillText(plot.deceased_name, 256, 170, 420);
-
-      const birth = plot.date_of_birth ? plot.date_of_birth.slice(0, 4) : "";
-      const death = plot.date_of_death ? plot.date_of_death.slice(0, 4) : "";
-      if (birth || death) {
-        ctx.font = "400 22px Inter, sans-serif";
-        ctx.fillText(`${birth} – ${death}`, 256, 220, 400);
-      }
-
-      ctx.font = "italic 20px Georgia, serif";
-      const words = plot.inscription.split(" ");
-      let line = "";
-      let y = 290;
-      for (const w of words) {
-        const test = line ? `${line} ${w}` : w;
-        if (test.length > 34) {
-          ctx.fillText(line, 256, y, 420);
-          line = w;
-          y += 30;
-        } else {
-          line = test;
-        }
-      }
-      if (line) ctx.fillText(line, 256, y, 420);
-
-      ctx.font = "400 16px monospace";
-      ctx.fillStyle = "#8C867B";
-      ctx.fillText(plot.plot_reference, 256, 455);
+    const ctx = texCanvas.getContext("2d")!;
+    ctx.fillStyle = headstoneHex;
+    ctx.fillRect(0, 0, 512, 512);
+    // Subtle stone grain
+    for (let i = 0; i < 600; i++) {
+      ctx.fillStyle = "rgba(150,140,125,0.08)";
+      ctx.fillRect(Math.random() * 512, Math.random() * 512, 3, 2);
     }
 
-    const faceTex = new THREE.CanvasTexture(texCanvas);
-    const sideMat = new THREE.MeshLambertMaterial({ color: headstoneHex });
-    const frontMat = new THREE.MeshLambertMaterial({ map: faceTex });
+    ctx.strokeStyle = "#B6A995";
+    ctx.lineWidth = 6;
+    ctx.strokeRect(24, 24, 464, 464);
 
-    const monument = new THREE.Mesh(new THREE.BoxGeometry(1.65, 1.9, 0.3), [
+    ctx.fillStyle = textHex;
+    ctx.textAlign = "center";
+    ctx.font = "600 32px Georgia, serif";
+    ctx.fillText(plot.deceased_name, 256, 165, 420);
+
+    const birth = plot.date_of_birth ? plot.date_of_birth.slice(0, 4) : "";
+    const death = plot.date_of_death ? plot.date_of_death.slice(0, 4) : "";
+    if (birth || death) {
+      ctx.font = "400 22px Inter, sans-serif";
+      ctx.fillText(`${birth} - ${death}`, 256, 215, 400);
+    }
+
+    ctx.font = "italic 20px Georgia, serif";
+    const words = plot.inscription.split(" ");
+    let line = "";
+    let y = 285;
+    for (const w of words) {
+      const test = line ? `${line} ${w}` : w;
+      if (test.length > 32) {
+        ctx.fillText(line, 256, y, 420);
+        line = w;
+        y += 30;
+      } else {
+        line = test;
+      }
+    }
+    if (line) ctx.fillText(line, 256, y, 420);
+
+    ctx.font = "400 15px monospace";
+    ctx.fillStyle = "#8C867B";
+    ctx.fillText(plot.plot_reference, 256, 455);
+
+    const faceTex = new THREE.CanvasTexture(texCanvas);
+    const sideMat = new THREE.MeshStandardMaterial({
+      color: headstoneHex,
+      roughness: 0.65,
+    });
+    const frontMat = new THREE.MeshStandardMaterial({
+      map: faceTex,
+      roughness: 0.6,
+    });
+
+    const monument = new THREE.Mesh(new THREE.BoxGeometry(1.75, 2.0, 0.34), [
       sideMat,
       sideMat,
       sideMat,
@@ -230,33 +365,56 @@ export function Cemetery3DWalk({
       frontMat,
       sideMat,
     ]);
-    monument.position.y = 1.15;
+    monument.position.y = 1.22;
     monument.castShadow = true;
     stoneGroup.add(monument);
 
     // 3D Flowers at base of headstone
-    const flowerCount = Math.max(1, Math.min(flowers.length, 6));
+    const flowerCount = Math.max(2, Math.min(flowers.length + 2, 7));
     for (let i = 0; i < flowerCount; i++) {
       const blossom = new THREE.Mesh(
-        new THREE.SphereGeometry(0.11, 10, 10),
-        new THREE.MeshLambertMaterial({
+        new THREE.DodecahedronGeometry(0.11, 1),
+        new THREE.MeshStandardMaterial({
           color: i % 2 === 0 ? "#FAF8F2" : "#D4A5A5",
+          roughness: 0.6,
         })
       );
-      blossom.position.set(-0.55 + i * 0.25, 0.28, 0.42);
+      blossom.position.set(-0.65 + i * 0.22, 0.3, 0.48);
       stoneGroup.add(blossom);
     }
 
     scene.add(stoneGroup);
 
-    // Gentle guided walk animation
-    const startZ = 26;
-    const endZ = 4.1;
+    // Soft golden sunlight particles
+    const particleGeo = new THREE.BufferGeometry();
+    const pCount = 90;
+    const positions = new Float32Array(pCount * 3);
+    for (let i = 0; i < pCount; i++) {
+      positions[i * 3] = (Math.random() - 0.5) * 18;
+      positions[i * 3 + 1] = 0.6 + Math.random() * 4.5;
+      positions[i * 3 + 2] = Math.random() * 28 - 2;
+    }
+    particleGeo.setAttribute(
+      "position",
+      new THREE.BufferAttribute(positions, 3)
+    );
+    const particles = new THREE.Points(
+      particleGeo,
+      new THREE.PointsMaterial({
+        color: "#FFF7DC",
+        size: 0.08,
+        transparent: true,
+        opacity: 0.65,
+      })
+    );
+    scene.add(particles);
+
+    const startZ = 28;
+    const endZ = 4.2;
     const durationMs = walkDurationSec * 1000;
     const startTime = performance.now();
     let frameId = 0;
 
-    // Clickable 3D headstone raycaster
     const raycaster = new THREE.Raycaster();
     const pointer = new THREE.Vector2();
 
@@ -265,8 +423,7 @@ export function Cemetery3DWalk({
       pointer.x = ((ev.clientX - rect.left) / rect.width) * 2 - 1;
       pointer.y = -((ev.clientY - rect.top) / rect.height) * 2 + 1;
       raycaster.setFromCamera(pointer, camera);
-      const hits = raycaster.intersectObject(monument, false);
-      if (hits.length > 0) {
+      if (raycaster.intersectObject(monument, false).length > 0) {
         onArrive();
       }
     };
@@ -276,8 +433,10 @@ export function Cemetery3DWalk({
       pointer.x = ((ev.clientX - rect.left) / rect.width) * 2 - 1;
       pointer.y = -((ev.clientY - rect.top) / rect.height) * 2 + 1;
       raycaster.setFromCamera(pointer, camera);
-      const hits = raycaster.intersectObject(monument, false);
-      renderer.domElement.style.cursor = hits.length > 0 ? "pointer" : "default";
+      renderer.domElement.style.cursor =
+        raycaster.intersectObject(monument, false).length > 0
+          ? "pointer"
+          : "default";
     };
 
     renderer.domElement.addEventListener("click", handleCanvasClick);
@@ -286,17 +445,16 @@ export function Cemetery3DWalk({
     const animate = (now: number) => {
       const elapsed = now - startTime;
       const t = Math.min(1, elapsed / durationMs);
-      // Smooth ease-in-out
       const eased = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
 
       camera.position.z = startZ + (endZ - startZ) * eased;
-      camera.position.y = 1.62 + Math.sin(elapsed * 0.005) * 0.025 * (1 - t);
-      camera.lookAt(0, 1.15, 0);
+      camera.position.y = 1.68 + Math.sin(elapsed * 0.004) * 0.025 * (1 - t);
+      camera.lookAt(0, 1.2, 0);
+
+      particles.rotation.y = elapsed * 0.00004;
 
       setProgress(Math.round(t * 100));
-      if (t >= 1) {
-        setArrived(true);
-      }
+      if (t >= 1) setArrived(true);
 
       renderer.render(scene, camera);
       frameId = requestAnimationFrame(animate);
@@ -361,10 +519,9 @@ export function Cemetery3DWalk({
 
   return (
     <div className="bg-white border border-[#E8E6E0] rounded-2xl overflow-hidden shadow-sm">
-      <div className="relative w-full h-[380px] sm:h-[460px] bg-[#E8ECE6]">
+      <div className="relative w-full h-[400px] sm:h-[480px] bg-[#DCE5DF]">
         <div ref={containerRef} className="w-full h-full" />
 
-        {/* Walk duration options */}
         <div className="absolute top-4 left-4 flex items-center gap-1.5 bg-white/90 border border-[#E8E6E0] rounded-full px-2.5 py-1 text-[11px]">
           <span className="text-[#77746F] pl-1">Walk:</span>
           {([10, 30, 60, 120] as const).map((sec) => (

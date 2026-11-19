@@ -4,6 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import { LegaseeLogo } from "./LegaseeLogo";
+import { useLanguage } from "./LanguageContext";
+import { LANGUAGE_LABELS, type SupportedLang } from "@/lib/i18n";
 import type { SessionUser } from "@/lib/types";
 
 interface NavbarProps {
@@ -12,6 +14,7 @@ interface NavbarProps {
 
 export function Navbar({ user }: NavbarProps) {
   const [open, setOpen] = useState(false);
+  const { lang, setLang, t } = useLanguage();
 
   const dashboardHref =
     user?.role === "ADMIN"
@@ -26,37 +29,49 @@ export function Navbar({ user }: NavbarProps) {
         <LegaseeLogo href="/" size="md" />
 
         {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-7 text-sm text-[#202020]">
+        <nav className="hidden md:flex items-center gap-6 text-sm text-[#202020]">
           <Link
             href="/how-it-works"
             className="text-[#77746F] hover:text-[#202020] transition-colors"
           >
-            How It Works
+            {t.navHowItWorks}
           </Link>
           <Link
             href="/#pricing"
             className="text-[#77746F] hover:text-[#202020] transition-colors"
           >
-            Pricing
+            {t.navPricing}
           </Link>
           <Link
             href="/memorial-garden"
             className="text-[#77746F] hover:text-[#202020] transition-colors"
           >
-            Memorial Garden
+            {t.navGarden}
           </Link>
           <Link
             href="/families"
             className="text-[#77746F] hover:text-[#202020] transition-colors"
           >
-            For Families
+            {t.navFamilies}
           </Link>
           <Link
             href="/funeral-homes"
             className="text-[#77746F] hover:text-[#202020] transition-colors"
           >
-            For Funeral Homes
+            {t.navFuneralHomes}
           </Link>
+          <select
+            aria-label="Select language"
+            value={lang}
+            onChange={(e) => setLang(e.target.value as SupportedLang)}
+            className="px-2.5 py-1 rounded-full border border-[#E8E6E0] bg-white text-xs text-[#202020]"
+          >
+            {(Object.keys(LANGUAGE_LABELS) as SupportedLang[]).map((code) => (
+              <option key={code} value={code}>
+                {code.toUpperCase()}
+              </option>
+            ))}
+          </select>
           {user ? (
             <Link
               href={dashboardHref}
@@ -70,13 +85,13 @@ export function Navbar({ user }: NavbarProps) {
                 href="/login"
                 className="text-[#202020] font-medium hover:text-[#77746F] transition-colors"
               >
-                Sign In
+                {t.navSignIn}
               </Link>
               <Link
                 href="/register"
                 className="px-4 py-2 rounded-full bg-[#242424] text-white font-medium hover:bg-[#383838] transition-colors"
               >
-                Get Started
+                {t.navGetStarted}
               </Link>
             </>
           )}
