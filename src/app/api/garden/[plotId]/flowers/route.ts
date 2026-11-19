@@ -5,11 +5,11 @@ import { ensureSeeded } from "@/lib/seed";
 import type { MemorialPlotRecord } from "@/lib/types";
 
 const FLOWER_CATALOG: Record<string, number> = {
-  "White Rose": 1.5,
-  "Ivory Lily": 1.5,
+  "White Rose": 2.0,
+  "Ivory Lily": 2.0,
   "Forget-Me-Not Bouquet": 2.0,
   "Olive & Laurel Wreath": 2.0,
-  "Sunlit Daisy Posy": 1.25,
+  "Seasonal Tribute Arrangement": 2.0,
 };
 
 export async function POST(
@@ -46,7 +46,7 @@ export async function POST(
     INSERT INTO digital_flowers (
       id, plot_id, flower_type, sender_name, is_anonymous, message,
       price_paid, currency, placed_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, 'USD', ?)
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, 'EUR', ?)
   `).run(
     flowerId,
     plotId,
@@ -68,7 +68,7 @@ export async function POST(
       is_anonymous: isAnonymous ? 1 : 0,
       message,
       price_paid: pricePaid,
-      currency: "USD",
+      currency: "EUR",
       placed_at: now,
     },
   });

@@ -77,6 +77,11 @@ export async function POST(request: Request) {
 
   const gardenType = project.project_type === "PET" ? "PET" : "HUMAN";
   const country = String(body.country || "United Kingdom").trim();
+  const virtualCity = String(body.virtual_city || "").trim() || null;
+  const actualBurialLocation =
+    String(body.actual_burial_location || "").trim() || null;
+  const meaningfulRestingPlace =
+    String(body.meaningful_resting_place || "").trim() || null;
   const sectionName = String(
     body.section_name ||
       (gardenType === "PET" ? "Sunlit Meadow • Row B" : "Oak Grove • Row A")
@@ -101,24 +106,34 @@ export async function POST(request: Request) {
   const inscription = String(
     body.inscription || "Forever remembered with love"
   ).trim();
-  const privacyLevel = ["PUBLIC", "FAMILY_ONLY", "PRIVATE"].includes(
+  const privacyLevel = ["PUBLIC", "UNLISTED", "PRIVATE"].includes(
     body.privacy_level
   )
     ? body.privacy_level
     : "PUBLIC";
+  const allowVisits = body.allow_visits === false ? 0 : 1;
   const allowFlowers = body.allow_flowers === false ? 0 : 1;
   const allowMessages = body.allow_messages === false ? 0 : 1;
+  const supportFamilyLabel =
+    String(body.support_family_label || "").trim() || null;
+  const supportFamilyUrl =
+    String(body.support_family_url || "").trim() || null;
 
   if (existing) {
     db.prepare(`
       UPDATE memorial_plots
-      SET country = ?, section_name = ?, plot_type = ?, family_plot_name = ?,
-          environment_template = ?, pathway_template = ?, headstone_style = ?,
-          headstone_color = ?, inscription = ?, privacy_level = ?,
-          allow_flowers = ?, allow_messages = ?
+      SET country = ?, virtual_city = ?, actual_burial_location = ?,
+          meaningful_resting_place = ?, section_name = ?, plot_type = ?,
+          family_plot_name = ?, environment_template = ?, pathway_template = ?,
+          headstone_style = ?, headstone_color = ?, inscription = ?,
+          privacy_level = ?, allow_visits = ?, allow_flowers = ?,
+          allow_messages = ?, support_family_label = ?, support_family_url = ?
       WHERE id = ?
     `).run(
       country,
+      virtualCity,
+      actualBurialLocation,
+      meaningfulRestingPlace,
       sectionName,
       plotType,
       familyPlotName,
@@ -128,8 +143,11 @@ export async function POST(request: Request) {
       headstoneColor,
       inscription,
       privacyLevel,
+      allowVisits,
       allowFlowers,
       allowMessages,
+      supportFamilyLabel,
+      supportFamilyUrl,
       existing.id
     );
     return NextResponse.json({ ok: true, plotId: existing.id, plotReference: existing.plot_reference });
@@ -149,17 +167,23 @@ export async function POST(request: Request) {
 
   db.prepare(`
     INSERT INTO memorial_plots (
-      id, project_id, garden_type, country, section_name, plot_reference,
+      id, project_id, garden_type, country, virtual_city,
+      actual_burial_location, meaningful_resting_place,
+      section_name, plot_reference,
       plot_type, family_plot_name, deceased_name, date_of_birth, date_of_death,
       photo_url, environment_template, pathway_template, headstone_style,
       headstone_color, inscription, verification_status, privacy_level,
-      allow_flowers, allow_messages, visit_count, created_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?)
+      allow_visits, allow_flowers, allow_messages,
+      support_family_label, support_family_url, visit_count, created_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?)
   `).run(
     plotId,
     projectId,
     gardenType,
     country,
+    virtualCity,
+    actualBurialLocation,
+    meaningfulRestingPlace,
     sectionName,
     plotReference,
     plotType,
@@ -175,8 +199,11 @@ export async function POST(request: Request) {
     inscription,
     verificationStatus,
     privacyLevel,
+    allowVisits,
     allowFlowers,
     allowMessages,
+    supportFamilyLabel,
+    supportFamilyUrl,
     new Date().toISOString()
   );
 

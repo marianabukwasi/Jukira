@@ -31,15 +31,15 @@ export function ensureSeeded() {
       "EUR",
       35,
       55,
-      79,
-      99,
+      99.99,
       149,
-      179,
       199,
+      249,
+      299,
       15,
       4.99,
-      49,
-      4.99,
+      99.99,
+      19.99,
       12,
       25,
       now
@@ -647,12 +647,14 @@ export function ensureSeeded() {
     // Seed Jukira Memorial Gardens & Pet Memorial Garden plots
     const insertPlot = db.prepare(`
       INSERT OR IGNORE INTO memorial_plots (
-        id, project_id, garden_type, country, section_name, plot_reference,
+        id, project_id, garden_type, country, virtual_city,
+        actual_burial_location, meaningful_resting_place,
+        section_name, plot_reference,
         plot_type, family_plot_name, deceased_name, date_of_birth, date_of_death,
         photo_url, environment_template, pathway_template, headstone_style,
         headstone_color, inscription, verification_status, privacy_level,
-        allow_flowers, allow_messages, visit_count, last_visited_at, created_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, 1, ?, ?, ?)
+        allow_visits, allow_flowers, allow_messages, visit_count, last_visited_at, created_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, 1, 1, ?, ?, ?)
     `);
 
     insertPlot.run(
@@ -660,6 +662,9 @@ export function ensureSeeded() {
       "prj_margaret",
       "HUMAN",
       "United Kingdom",
+      "Oxford",
+      "Wolvercote Cemetery, Oxford, UK",
+      "Devon Coastline",
       "Oak Grove • Row A",
       "JUK-UK-A014",
       "FAMILY_PLOT",
@@ -685,6 +690,9 @@ export function ensureSeeded() {
       null,
       "HUMAN",
       "United Kingdom",
+      "Oxford",
+      "Wolvercote Cemetery, Oxford, UK",
+      "Bath Abbey Gardens",
       "Oak Grove • Row A",
       "JUK-UK-A015",
       "FAMILY_PLOT",
@@ -710,6 +718,9 @@ export function ensureSeeded() {
       "prj_barnaby",
       "PET",
       "United Kingdom",
+      "Devon",
+      "Home Garden, Devon, UK",
+      "South West Coast Path",
       "Sunlit Meadow • Row B",
       "JUK-PET-B004",
       "INDIVIDUAL",

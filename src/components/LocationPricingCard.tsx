@@ -55,18 +55,30 @@ export function LocationPricingCard({
 
   const tiers = [
     {
-      label: "Memory Collection (Unedited Compilation, No Film Editing)",
-      price: active.tier_collection ?? 35,
+      label:
+        "Jukira Individual Memorial (Headstone + Garden + Website + 2-Min Video)",
+      price: active.website_setup_price ?? 99.99,
     },
     {
-      label: "Photo Tribute Slideshow (Photos Only)",
-      price: active.tier_slideshow ?? 55,
+      label: "Jukira Films: Short Memorial Film (Up to 10 min)",
+      price: active.tier_10,
     },
-    { label: "Short Memorial Film (Up to 10 min, Photos & Videos)", price: active.tier_10 },
-    { label: "Standard Memorial Film (10–20 min, Photos & Videos)", price: active.tier_20 },
-    { label: "Extended Memorial Film (20–30 min, Photos & Videos)", price: active.tier_30 },
-    { label: "Feature Memorial Film (30–45 min, Photos & Videos)", price: active.tier_45 },
-    { label: "Full Life Documentary (45–60 min, Photos & Videos)", price: active.tier_60 },
+    {
+      label: "Jukira Films: Standard Memorial Film (10–20 min)",
+      price: active.tier_20,
+    },
+    {
+      label: "Jukira Films: Extended Memorial Film (20–30 min)",
+      price: active.tier_30,
+    },
+    {
+      label: "Jukira Films: Feature Memorial Film (30–45 min)",
+      price: active.tier_45,
+    },
+    {
+      label: "Jukira Films: Full Life Documentary (45–60 min)",
+      price: active.tier_60,
+    },
   ];
 
   return (
@@ -122,25 +134,23 @@ export function LocationPricingCard({
 
       <div className="mt-5 pt-4 border-t border-[#E8E6E0] text-xs text-[#77746F] space-y-1">
         <p>
-          Optional Raw Footage Download:{" "}
+          Annual Memorial Renewal:{" "}
           <strong className="text-[#202020]">
-            {formatAmount(active.raw_footage_price, active.currency)}
+            {formatAmount(active.website_annual_renewal ?? 19.99, active.currency)}
+            /year
           </strong>
         </p>
         <p>
-          Optional Dedicated Memorial Website:{" "}
+          Digital Flowers (Visitor Tributes):{" "}
           <strong className="text-[#202020]">
-            {formatAmount(active.website_setup_price ?? 49, active.currency)}
+            {formatAmount(2, active.currency)}
           </strong>{" "}
-          (includes 6 months free hosting, then{" "}
-          {formatAmount(active.archive_monthly_price ?? 4.99, active.currency)}
-          /month)
+          per bouquet (30-day display)
         </p>
         <p>
-          Optional Cloud Archive:{" "}
+          Optional Raw Footage Download:{" "}
           <strong className="text-[#202020]">
-            {formatAmount(active.archive_monthly_price ?? 4.99, active.currency)}
-            /month
+            {formatAmount(active.raw_footage_price, active.currency)}
           </strong>
         </p>
       </div>

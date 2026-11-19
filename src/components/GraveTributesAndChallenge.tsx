@@ -5,11 +5,11 @@ import { Flag, Flower2 } from "lucide-react";
 import type { DigitalFlowerRecord } from "@/lib/types";
 
 const FLOWER_OPTIONS = [
-  { name: "White Rose", price: "$1.50" },
-  { name: "Ivory Lily", price: "$1.50" },
-  { name: "Forget-Me-Not Bouquet", price: "$2.00" },
-  { name: "Olive & Laurel Wreath", price: "$2.00" },
-  { name: "Sunlit Daisy Posy", price: "$1.25" },
+  { name: "White Rose", price: "€2.00" },
+  { name: "Ivory Lily", price: "€2.00" },
+  { name: "Forget-Me-Not Bouquet", price: "€2.00" },
+  { name: "Olive & Laurel Wreath", price: "€2.00" },
+  { name: "Seasonal Tribute Arrangement", price: "€2.00" },
 ];
 
 export function GraveTributesAndChallenge({

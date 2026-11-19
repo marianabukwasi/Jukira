@@ -347,6 +347,9 @@ export interface MemorialPlotRecord {
   project_id: string | null;
   garden_type: "HUMAN" | "PET";
   country: string;
+  virtual_city: string | null;
+  actual_burial_location: string | null;
+  meaningful_resting_place: string | null;
   section_name: string;
   plot_reference: string;
   plot_type: "INDIVIDUAL" | "FAMILY_PLOT";
@@ -361,9 +364,12 @@ export interface MemorialPlotRecord {
   headstone_color: string;
   inscription: string;
   verification_status: PlotVerificationStatus;
-  privacy_level: "PUBLIC" | "FAMILY_ONLY" | "PRIVATE";
+  privacy_level: "PUBLIC" | "UNLISTED" | "PRIVATE";
+  allow_visits: number;
   allow_flowers: number;
   allow_messages: number;
+  support_family_label: string | null;
+  support_family_url: string | null;
   visit_count: number;
   last_visited_at: string | null;
   created_at: string;

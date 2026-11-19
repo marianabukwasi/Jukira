@@ -251,6 +251,9 @@ function initSchema(db: DatabaseSync) {
       project_id TEXT REFERENCES projects(id) ON DELETE SET NULL,
       garden_type TEXT NOT NULL DEFAULT 'HUMAN',
       country TEXT NOT NULL DEFAULT 'United Kingdom',
+      virtual_city TEXT,
+      actual_burial_location TEXT,
+      meaningful_resting_place TEXT,
       section_name TEXT NOT NULL DEFAULT 'Oak Grove',
       plot_reference TEXT NOT NULL UNIQUE,
       plot_type TEXT NOT NULL DEFAULT 'INDIVIDUAL',
@@ -266,8 +269,11 @@ function initSchema(db: DatabaseSync) {
       inscription TEXT NOT NULL DEFAULT 'Forever remembered with love',
       verification_status TEXT NOT NULL DEFAULT 'APPROVED',
       privacy_level TEXT NOT NULL DEFAULT 'PUBLIC',
+      allow_visits INTEGER NOT NULL DEFAULT 1,
       allow_flowers INTEGER NOT NULL DEFAULT 1,
       allow_messages INTEGER NOT NULL DEFAULT 1,
+      support_family_label TEXT,
+      support_family_url TEXT,
       visit_count INTEGER NOT NULL DEFAULT 0,
       last_visited_at TEXT,
       created_at TEXT NOT NULL
@@ -345,6 +351,16 @@ function initSchema(db: DatabaseSync) {
     db.exec("ALTER TABLE memorial_websites ADD COLUMN listed_in_garden INTEGER NOT NULL DEFAULT 0;");
     db.exec("ALTER TABLE memorial_websites ADD COLUMN garden_location TEXT;");
     db.exec("ALTER TABLE memorial_websites ADD COLUMN garden_tribute TEXT;");
+  } catch {
+    // Columns already exist
+  }
+  try {
+    db.exec("ALTER TABLE memorial_plots ADD COLUMN virtual_city TEXT;");
+    db.exec("ALTER TABLE memorial_plots ADD COLUMN actual_burial_location TEXT;");
+    db.exec("ALTER TABLE memorial_plots ADD COLUMN meaningful_resting_place TEXT;");
+    db.exec("ALTER TABLE memorial_plots ADD COLUMN allow_visits INTEGER NOT NULL DEFAULT 1;");
+    db.exec("ALTER TABLE memorial_plots ADD COLUMN support_family_label TEXT;");
+    db.exec("ALTER TABLE memorial_plots ADD COLUMN support_family_url TEXT;");
   } catch {
     // Columns already exist
   }

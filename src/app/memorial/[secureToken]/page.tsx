@@ -168,6 +168,28 @@ export default async function DedicatedMemorialWebsitePage({
     .prepare("SELECT * FROM memorial_plots WHERE project_id = ?")
     .get(project.id) as unknown as MemorialPlotRecord | undefined;
 
+  if (plot && (plot.privacy_level === "PRIVATE" || !plot.allow_visits)) {
+    return (
+      <div className="min-h-screen bg-[#F8F7F3] flex items-center justify-center p-6 text-center">
+        <div className="max-w-md bg-white border border-[#E8E6E0] rounded-2xl p-8 space-y-4">
+          <h1 className="font-editorial text-2xl text-[#202020]">
+            Private Memorial Resting Place
+          </h1>
+          <p className="text-sm text-[#77746F]">
+            Visits to {project.deceased_full_name}’s resting place are currently
+            restricted by the family.
+          </p>
+          <Link
+            href="/memorial-garden"
+            className="inline-flex px-6 py-2.5 rounded-full bg-[#242424] text-white text-xs font-medium"
+          >
+            Return to Jukira Memorial Gardens
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   let plotFlowers: DigitalFlowerRecord[] = [];
   let familyPlots: MemorialPlotRecord[] = [];
 
@@ -285,6 +307,68 @@ export default async function DedicatedMemorialWebsitePage({
                 allowFlowers={Boolean(plot.allow_flowers)}
                 initialFlowers={plotFlowers}
               />
+
+              {/* Three Distinct Locations (Section 4.3) */}
+              {(plot.virtual_city ||
+                plot.actual_burial_location ||
+                plot.meaningful_resting_place) && (
+                <div className="bg-white border border-[#E8E6E0] rounded-2xl p-6 grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+                  <div>
+                    <p className="text-[#77746F] uppercase tracking-wider text-[10px]">
+                      Virtual Cemetery Setting
+                    </p>
+                    <p className="font-medium text-[#202020] mt-1">
+                      {[plot.virtual_city, plot.country]
+                        .filter(Boolean)
+                        .join(", ")}
+                    </p>
+                  </div>
+                  {plot.actual_burial_location && (
+                    <div>
+                      <p className="text-[#77746F] uppercase tracking-wider text-[10px]">
+                        Physical Burial Location
+                      </p>
+                      <p className="font-medium text-[#202020] mt-1">
+                        {plot.actual_burial_location}
+                      </p>
+                    </div>
+                  )}
+                  {plot.meaningful_resting_place && (
+                    <div>
+                      <p className="text-[#77746F] uppercase tracking-wider text-[10px]">
+                        Meaningful Place
+                      </p>
+                      <p className="font-medium text-[#202020] mt-1">
+                        {plot.meaningful_resting_place}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Support the Family External Link (Section 11.2) */}
+              {plot.support_family_url && (
+                <div className="bg-white border border-[#E8E6E0] rounded-2xl p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div>
+                    <p className="font-editorial text-lg text-[#202020]">
+                      {plot.support_family_label || "Support the Family"}
+                    </p>
+                    <p className="text-xs text-[#77746F] mt-1">
+                      External family link (GoFundMe, PayPal, Mobile Money, or
+                      Bank Transfer). Jukira does not collect, hold, or manage
+                      family donations.
+                    </p>
+                  </div>
+                  <a
+                    href={plot.support_family_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-5 py-2.5 rounded-full border border-[#242424] text-xs font-medium text-[#202020] hover:bg-[#F1EFE9] shrink-0"
+                  >
+                    Open External Link
+                  </a>
+                </div>
+              )}
             </div>
           </section>
         )}
