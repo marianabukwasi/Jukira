@@ -56,6 +56,7 @@ function initSchema(db: DatabaseSync) {
     CREATE TABLE IF NOT EXISTS projects (
       id TEXT PRIMARY KEY,
       secure_token TEXT NOT NULL UNIQUE,
+      project_type TEXT NOT NULL DEFAULT 'PERSON',
       deceased_full_name TEXT NOT NULL,
       deceased_preferred_name TEXT NOT NULL,
       date_of_birth TEXT,
@@ -273,6 +274,11 @@ function initSchema(db: DatabaseSync) {
   }
   try {
     db.exec("ALTER TABLE memorial_messages ADD COLUMN attachment_media_id TEXT;");
+  } catch {
+    // Column already exists
+  }
+  try {
+    db.exec("ALTER TABLE projects ADD COLUMN project_type TEXT NOT NULL DEFAULT 'PERSON';");
   } catch {
     // Column already exists
   }

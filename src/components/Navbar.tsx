@@ -34,6 +34,12 @@ export function Navbar({ user }: NavbarProps) {
             How It Works
           </Link>
           <Link
+            href="/#pricing"
+            className="text-[#77746F] hover:text-[#202020] transition-colors"
+          >
+            Pricing
+          </Link>
+          <Link
             href="/families"
             className="text-[#77746F] hover:text-[#202020] transition-colors"
           >
@@ -90,6 +96,13 @@ export function Navbar({ user }: NavbarProps) {
             className="block py-2 text-[#202020]"
           >
             How It Works
+          </Link>
+          <Link
+            href="/#pricing"
+            onClick={() => setOpen(false)}
+            className="block py-2 text-[#202020]"
+          >
+            Pricing
           </Link>
           <Link
             href="/families"

@@ -46,6 +46,7 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
+    const projectType = body.projectType === "PET" ? "PET" : "PERSON";
     const deceasedFullName = String(body.deceasedFullName || "").trim();
     const deceasedPreferredName =
       String(body.deceasedPreferredName || "").trim() ||
@@ -107,17 +108,18 @@ export async function POST(request: Request) {
 
     db.prepare(`
       INSERT INTO projects (
-        id, secure_token, deceased_full_name, deceased_preferred_name,
+        id, secure_token, project_type, deceased_full_name, deceased_preferred_name,
         date_of_birth, date_of_passing, main_photo_url,
         owner_id, owner_name, owner_email, owner_phone,
         funeral_home_id, film_duration_tier, preferred_language,
         country_market, currency, project_status, closing_date,
         opening_title, closing_title, music_choice, presentation_style,
         include_shorter_version, review_required, raw_footage_purchased, created_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'COLLECTING_CONTRIBUTIONS', ?, ?, ?, 'Warm Acoustic & Piano', 'Chronological', 0, 0, 0, ?)
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'COLLECTING_CONTRIBUTIONS', ?, ?, ?, 'Warm Acoustic & Piano', 'Chronological', 0, 0, 0, ?)
     `).run(
       projectId,
       secureToken,
+      projectType,
       deceasedFullName,
       deceasedPreferredName,
       dateOfBirth,

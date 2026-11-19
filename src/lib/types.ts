@@ -145,6 +145,7 @@ export interface FuneralHomeRecord {
 export interface ProjectRecord {
   id: string;
   secure_token: string;
+  project_type: "PERSON" | "PET";
   deceased_full_name: string;
   deceased_preferred_name: string;
   date_of_birth: string | null;

@@ -4,12 +4,15 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { HeroSequence } from "@/components/HeroSequence";
 import { SampleFilmPlayer } from "@/components/SampleFilmPlayer";
+import { LocationPricingCard } from "@/components/LocationPricingCard";
 import { getSession } from "@/lib/auth";
 import { ensureSeeded } from "@/lib/seed";
+import { getAllPricingConfigs } from "@/lib/pricing";
 
 export default async function HomePage() {
   ensureSeeded();
   const user = await getSession();
+  const configs = getAllPricingConfigs();
 
   return (
     <div className="min-h-screen flex flex-col bg-[#F8F7F3] text-[#202020]">
@@ -40,6 +43,12 @@ export default async function HomePage() {
                   className="w-full sm:w-auto px-7 py-3.5 rounded-full bg-white border border-[#E8E6E0] text-[#202020] text-sm font-medium hover:bg-[#F1EFE9] transition-colors"
                 >
                   See How It Works
+                </Link>
+                <Link
+                  href="#pricing"
+                  className="w-full sm:w-auto px-7 py-3.5 rounded-full bg-white border border-[#E8E6E0] text-[#202020] text-sm font-medium hover:bg-[#F1EFE9] transition-colors"
+                >
+                  Pricing
                 </Link>
               </div>
             </div>
@@ -191,16 +200,16 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* 3.6 Family Section & 3.7 Funeral Home Section */}
+        {/* 3.6 Family, Pet Memorial & 3.7 Funeral Home Sections */}
         <section className="py-16 sm:py-24 px-5 sm:px-8">
-          <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
             {/* Family */}
-            <div className="bg-white border border-[#E8E6E0] rounded-2xl p-8 sm:p-10 flex flex-col justify-between">
+            <div className="bg-white border border-[#E8E6E0] rounded-2xl p-8 flex flex-col justify-between">
               <div>
                 <p className="text-xs uppercase tracking-[0.2em] text-[#B6A995] font-medium mb-2">
                   For Families
                 </p>
-                <h2 className="font-editorial text-2xl sm:text-3xl text-[#202020] mb-4">
+                <h2 className="font-editorial text-2xl text-[#202020] mb-4">
                   For the people who want to keep their memories close.
                 </h2>
                 <ul className="space-y-2.5 text-sm text-[#77746F] mb-8">
@@ -210,7 +219,7 @@ export default async function HomePage() {
                     "Review submitted material in a calm private gallery",
                     "Choose your desired finished-film length",
                     "Receive and download the finished MP4 film",
-                    "Optionally preserve the collection online",
+                    "Optionally add a dedicated memorial website",
                   ].map((item) => (
                     <li key={item} className="flex items-start gap-2.5">
                       <Check className="w-4 h-4 text-[#718875] mt-0.5 shrink-0" />
@@ -229,14 +238,52 @@ export default async function HomePage() {
               </div>
             </div>
 
+            {/* Pet Memorials */}
+            <div className="bg-white border border-[#E8E6E0] rounded-2xl p-8 flex flex-col justify-between">
+              <div>
+                <p className="text-xs uppercase tracking-[0.2em] text-[#B6A995] font-medium mb-2">
+                  Pet Memorials
+                </p>
+                <h2 className="font-editorial text-2xl text-[#202020] mb-4">
+                  For beloved pets who were part of the family.
+                </h2>
+                <p className="text-sm text-[#77746F] mb-5 leading-relaxed">
+                  Dogs, cats, and lifelong companions leave just as many
+                  everyday moments across family phones. Gather everyone’s
+                  favourite photos and videos into a tribute film or slideshow.
+                </p>
+                <ul className="space-y-2.5 text-sm text-[#77746F] mb-8">
+                  {[
+                    "Collect clips from family, walkers, and friends",
+                    "Photo slideshow or full video & photo tribute film",
+                    "Optional dedicated pet memorial website",
+                    "Human quality review before delivery",
+                  ].map((item) => (
+                    <li key={item} className="flex items-start gap-2.5">
+                      <Check className="w-4 h-4 text-[#718875] mt-0.5 shrink-0" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <Link
+                  href="/register"
+                  className="inline-flex items-center justify-center px-6 py-3 rounded-full bg-[#242424] text-white text-sm font-medium hover:bg-[#383838] transition-colors"
+                >
+                  Create a Pet Memorial
+                </Link>
+              </div>
+            </div>
+
             {/* Funeral Homes */}
-            <div className="bg-white border border-[#E8E6E0] rounded-2xl p-8 sm:p-10 flex flex-col justify-between">
+            <div className="bg-white border border-[#E8E6E0] rounded-2xl p-8 flex flex-col justify-between">
               <div>
                 <div className="flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-[#B6A995] font-medium mb-2">
                   <HeartHandshake className="w-4 h-4" />
                   <span>For Funeral Homes</span>
                 </div>
-                <h2 className="font-editorial text-2xl sm:text-3xl text-[#202020] mb-4">
+                <h2 className="font-editorial text-2xl text-[#202020] mb-4">
                   Give families another way to celebrate a life.
                 </h2>
                 <p className="text-sm text-[#77746F] mb-5 leading-relaxed">
@@ -249,7 +296,7 @@ export default async function HomePage() {
                     "An additional service to offer families",
                     "A simple contribution process via WhatsApp or email",
                     "Professionally produced memorial films",
-                    "A finished film families can keep and revisit",
+                    "Optional white-label branding for your funeral home",
                     "No need to operate your own video production team",
                   ].map((item) => (
                     <li key={item} className="flex items-start gap-2.5">
@@ -268,6 +315,24 @@ export default async function HomePage() {
                 </Link>
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* Pricing Section on Homepage */}
+        <section
+          id="pricing"
+          className="py-16 sm:py-24 px-5 sm:px-8 bg-[#F1EFE9] border-t border-[#E8E6E0]"
+        >
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center max-w-xl mx-auto mb-10">
+              <p className="text-xs uppercase tracking-[0.2em] text-[#B6A995] font-medium mb-2">
+                Transparent Pricing
+              </p>
+              <h2 className="font-editorial text-3xl sm:text-4xl text-[#202020]">
+                Simple packages by format and location.
+              </h2>
+            </div>
+            <LocationPricingCard configs={configs} mode="family" />
           </div>
         </section>
 

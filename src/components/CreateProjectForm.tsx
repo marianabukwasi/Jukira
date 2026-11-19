@@ -22,6 +22,7 @@ export function CreateProjectForm({
   redirectPrefix,
 }: CreateProjectFormProps) {
   const router = useRouter();
+  const [projectType, setProjectType] = useState<"PERSON" | "PET">("PERSON");
   const [deceasedFullName, setDeceasedFullName] = useState("");
   const [deceasedPreferredName, setDeceasedPreferredName] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
@@ -58,6 +59,7 @@ export function CreateProjectForm({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          projectType,
           deceasedFullName,
           deceasedPreferredName,
           dateOfBirth,
@@ -93,17 +95,51 @@ export function CreateProjectForm({
         </div>
       )}
 
+      <div>
+        <label className="block text-xs font-medium text-[#77746F] mb-1.5">
+          Who is this memorial for?
+        </label>
+        <div className="grid grid-cols-2 gap-2 p-1 rounded-xl bg-[#F1EFE9]">
+          <button
+            type="button"
+            onClick={() => setProjectType("PERSON")}
+            className={`py-2 rounded-lg text-xs font-medium transition-colors ${
+              projectType === "PERSON"
+                ? "bg-white text-[#202020] shadow-xs"
+                : "text-[#77746F]"
+            }`}
+          >
+            A Loved One
+          </button>
+          <button
+            type="button"
+            onClick={() => setProjectType("PET")}
+            className={`py-2 rounded-lg text-xs font-medium transition-colors ${
+              projectType === "PET"
+                ? "bg-white text-[#202020] shadow-xs"
+                : "text-[#77746F]"
+            }`}
+          >
+            A Beloved Pet
+          </button>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className="block text-xs font-medium text-[#77746F] mb-1.5">
-            Full Name of the Deceased *
+            {projectType === "PET" ? "Pet's Name *" : "Full Name of the Deceased *"}
           </label>
           <input
             type="text"
             required
             value={deceasedFullName}
             onChange={(e) => setDeceasedFullName(e.target.value)}
-            placeholder="e.g. Margaret Eleanor Vance"
+            placeholder={
+              projectType === "PET"
+                ? "e.g. Barnaby (Golden Retriever)"
+                : "e.g. Margaret Eleanor Vance"
+            }
             className="w-full px-3.5 py-2.5 rounded-lg border border-[#E8E6E0] bg-[#F8F7F3] text-sm"
           />
         </div>
