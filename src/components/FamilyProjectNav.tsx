@@ -12,7 +12,7 @@ export function FamilyProjectNav({ projectId }: { projectId: string }) {
     { href: `${base}/preferences`, label: "Film Preferences" },
     { href: `${base}/production`, label: "Production Status" },
     { href: `${base}/film`, label: "Final Film & Raw Footage" },
-    { href: `${base}/website`, label: "Memorial Website" },
+    { href: `${base}/website`, label: "Headstone & Garden" },
     { href: `${base}/archive`, label: "Archive" },
   ];
 

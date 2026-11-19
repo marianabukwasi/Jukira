@@ -97,6 +97,14 @@ export default async function DedicatedMemorialWebsitePage({
     )
     .all(project.id) as unknown as MediaRecord[];
 
+  const originalVideos = db
+    .prepare(
+      `SELECT * FROM media
+       WHERE project_id = ? AND file_type = 'VIDEO' AND approval_status = 'APPROVED'
+       ORDER BY created_at ASC`
+    )
+    .all(project.id) as unknown as MediaRecord[];
+
   const job = db
     .prepare("SELECT * FROM production_jobs WHERE project_id = ?")
     .get(project.id) as unknown as ProductionJobRecord | undefined;
@@ -248,7 +256,15 @@ export default async function DedicatedMemorialWebsitePage({
                   {plot.environment_template} • {plot.pathway_template}
                 </p>
               </div>
-              <HeadstoneCard plot={{ ...plot }} flowers={plotFlowers} />
+              <HeadstoneCard
+                plot={{ ...plot }}
+                flowers={plotFlowers}
+                href="#life-memories"
+              />
+              <p className="text-center text-xs text-[#77746F]">
+                Select the headstone above to open {project.deceased_preferred_name}
+                ’s story, memorial film, original videos, and photographs.
+              </p>
 
               {familyPlots.length > 0 && (
                 <div className="pt-4">
@@ -274,7 +290,10 @@ export default async function DedicatedMemorialWebsitePage({
 
         {/* Story */}
         {website.life_story && (
-          <section className="py-14 px-5 sm:px-8 max-w-3xl mx-auto">
+          <section
+            id="life-memories"
+            className="py-14 px-5 sm:px-8 max-w-3xl mx-auto"
+          >
             <h2 className="font-editorial text-3xl text-[#202020] mb-4">
               {project.deceased_preferred_name}&rsquo;s Story
             </h2>
@@ -313,23 +332,79 @@ export default async function DedicatedMemorialWebsitePage({
           </section>
         )}
 
-        {/* Memorial Film */}
-        <section className="py-14 px-5 sm:px-8 max-w-4xl mx-auto">
-          <h2 className="font-editorial text-3xl text-[#202020] mb-4">
-            Memorial Film
-          </h2>
-          {filmReady && filmToken ? (
-            <video
-              src={`/api/projects/${project.id}/film?token=${encodeURIComponent(
-                filmToken
-              )}`}
-              controls
-              className="w-full rounded-2xl border border-[#E8E6E0] bg-black max-h-[480px]"
-            />
-          ) : (
-            <div className="bg-white border border-[#E8E6E0] rounded-2xl p-8 text-center text-sm text-[#77746F]">
-              The family’s memorial film is currently being prepared and will
-              appear here once completed.
+        {/* Memorial Film & Original Videos */}
+        <section className="py-14 px-5 sm:px-8 max-w-4xl mx-auto space-y-10">
+          <div>
+            <h2 className="font-editorial text-3xl text-[#202020] mb-4">
+              Memorial Film
+            </h2>
+            {filmReady && filmToken ? (
+              <video
+                src={`/api/projects/${project.id}/film?token=${encodeURIComponent(
+                  filmToken
+                )}`}
+                controls
+                className="w-full rounded-2xl border border-[#E8E6E0] bg-black max-h-[480px]"
+              />
+            ) : (
+              <div className="bg-white border border-[#E8E6E0] rounded-2xl p-8 text-center text-sm text-[#77746F]">
+                The family’s edited memorial film is currently being prepared
+                and will appear here once completed.
+              </div>
+            )}
+          </div>
+
+          {originalVideos.length > 0 && (
+            <div>
+              <h3 className="font-editorial text-2xl text-[#202020] mb-2">
+                Original Videos &amp; Everyday Moments
+              </h3>
+              <p className="text-sm text-[#77746F] mb-5">
+                Unedited recordings of {project.deceased_preferred_name} speaking,
+                laughing, and sharing everyday moments.
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                {originalVideos.map((vid) => {
+                  const token = createExpiringDownloadToken(
+                    {
+                      projectId: project.id,
+                      kind: "media",
+                      targetId: vid.id,
+                    },
+                    3600
+                  );
+                  return (
+                    <div
+                      key={vid.id}
+                      className="bg-white border border-[#E8E6E0] rounded-2xl overflow-hidden"
+                    >
+                      <video
+                        src={`/api/media/${vid.id}/file?token=${encodeURIComponent(
+                          token
+                        )}`}
+                        controls
+                        className="w-full aspect-video bg-black"
+                      />
+                      {(vid.caption || vid.event_date || vid.event_location) && (
+                        <div className="p-4">
+                          {vid.caption && (
+                            <p className="text-sm text-[#202020]">
+                              {vid.caption}
+                            </p>
+                          )}
+                          {(vid.event_date || vid.event_location) && (
+                            <p className="text-xs text-[#77746F] mt-1">
+                              {[vid.event_date, vid.event_location]
+                                .filter(Boolean)
+                                .join(" • ")}
+                            </p>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           )}
         </section>
