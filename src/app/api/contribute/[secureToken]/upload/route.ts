@@ -15,7 +15,7 @@ const ALLOWED_IMAGE_EXT = new Set([
   "gif",
 ]);
 const ALLOWED_VIDEO_EXT = new Set(["mp4", "mov", "m4v", "webm", "avi"]);
-const MAX_FILE_BYTES = 250 * 1024 * 1024; // 250MB per file
+const MAX_FILE_BYTES = 1024 * 1024 * 1024; // 1 GB per file
 
 export async function POST(
   request: Request,
@@ -131,7 +131,7 @@ export async function POST(
       if (file.size > MAX_FILE_BYTES) {
         return NextResponse.json(
           {
-            error: `File "${file.name}" exceeds the 250 MB single-file limit.`,
+            error: `File "${file.name}" exceeds the 1 GB single-file limit.`,
           },
           { status: 400 }
         );

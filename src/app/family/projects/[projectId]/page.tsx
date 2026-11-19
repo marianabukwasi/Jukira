@@ -62,28 +62,38 @@ export default async function FamilyProjectOverviewPage({
 
   return (
     <DashboardShell user={user} portalLabel="Family Portal" navItems={navItems}>
-      <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-6">
-        {project.main_photo_url && (
-          /* eslint-disable-next-line @next/next/no-img-element */
-          <img
-            src={project.main_photo_url}
-            alt={project.deceased_full_name}
-            className="w-16 h-16 rounded-full object-cover border border-[#E8E6E0]"
-          />
-        )}
-        <div>
-          <h1 className="font-editorial text-3xl text-[#202020]">
-            {project.deceased_full_name}
-          </h1>
-          <p className="text-xs text-[#77746F] mt-1">
-            Package: {FILM_DURATION_LABELS[project.film_duration_tier]}
-            {project.closing_date
-              ? ` • Contributions close ${new Date(
-                  project.closing_date
-                ).toLocaleDateString("en-GB")}`
-              : ""}
-          </p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+          {project.main_photo_url && (
+            /* eslint-disable-next-line @next/next/no-img-element */
+            <img
+              src={project.main_photo_url}
+              alt={project.deceased_full_name}
+              className="w-16 h-16 rounded-full object-cover border border-[#E8E6E0]"
+            />
+          )}
+          <div>
+            <h1 className="font-editorial text-3xl text-[#202020]">
+              {project.deceased_full_name}
+            </h1>
+            <p className="text-xs text-[#77746F] mt-1">
+              Package: {FILM_DURATION_LABELS[project.film_duration_tier]}
+              {project.closing_date
+                ? ` • Contributions close ${new Date(
+                    project.closing_date
+                  ).toLocaleDateString("en-GB")}`
+                : ""}
+            </p>
+          </div>
         </div>
+        <Link
+          href={`/contribute/${project.secure_token}/upload?owner=${encodeURIComponent(
+            user.name
+          )}`}
+          className="inline-flex items-center justify-center px-5 py-2.5 rounded-full bg-[#242424] text-white text-xs font-medium hover:bg-[#383838] self-start"
+        >
+          Upload Photos &amp; Videos Myself
+        </Link>
       </div>
 
       <FamilyProjectNav projectId={projectId} />

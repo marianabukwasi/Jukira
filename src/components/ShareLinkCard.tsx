@@ -96,6 +96,26 @@ export function ShareLinkCard({
           <Mail className="w-3.5 h-3.5" />
           <span>Email</span>
         </a>
+        <a
+          href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+            shareUrl
+          )}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full border border-[#E8E6E0] text-xs font-medium text-[#202020] hover:bg-[#F1EFE9]"
+        >
+          <span>Facebook</span>
+        </a>
+        <a
+          href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
+            messageText
+          )}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full border border-[#E8E6E0] text-xs font-medium text-[#202020] hover:bg-[#F1EFE9]"
+        >
+          <span>X / Twitter</span>
+        </a>
         <button
           type="button"
           onClick={nativeShare}

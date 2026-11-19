@@ -57,6 +57,9 @@ export default function ContributeUploadPage() {
   const [globalError, setGlobalError] = useState("");
 
   useEffect(() => {
+    const ownerParam = new URLSearchParams(window.location.search).get("owner");
+    if (ownerParam) setContributorName(ownerParam);
+
     fetch(`/api/contribute/${secureToken}`)
       .then((r) => r.json())
       .then((d) => {
